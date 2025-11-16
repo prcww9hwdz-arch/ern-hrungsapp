@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ernährungsplan App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: #eee;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #4CAF50;
+        }
+        .week, .meals, .shopping-list, .weights {
+            background: #222;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        input {
+            padding: 8px;
+            border-radius: 6px;
+            margin: 5px 0;
+            width: 100%;
+        }
+        .meal-item, .shopping-item, .weight-item {
+            padding: 5px 0;
+            border-bottom: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Ernährungsplan – 10 Wochen</h1>
+
+<div class="week">
+    <h2>Woche auswählen</h2>
+    <select id="weekSelect"></select>
+</div>
+
+<div class="meals">
+    <h2>Mahlzeiten (3 pro Tag)</h2>
+    <div id="mealList"></div>
+</div>
+
+<div class="shopping-list">
+    <h2>Einkaufsliste</h2>
+    <div id="shoppingList"></div>
+</div>
+
+<div class="weights">
+    <h2>Gewicht tracken</h2>
+    <input type="date" id="weightDate">
+    <input type="number" id="weightNumber" placeholder="Gewicht in kg">
+    <button onclick="saveWeight()">Speichern</button>
+    <div id="weightHistory"></div>
+</div>
+
+<script>
+// ----------------------------
+// 10 Wochen – wechselnde Mahlzeiten
+// ----------------------------
+
+const weeklyMeals = [
+    {
+        breakfast: "Haferflocken + Beeren + Honig",
+        lunch: "Hähnchen, Reis, Brokkoli",
+        dinner: "Gemüsepfanne + Eier"
+    },
+    {
+        breakfast: "Griechischer Joghurt + Früchte",
+        lunch: "Vollkornnudeln + Pesto + Tomaten",
+        dinner: "Lachs + Kartoffeln + Spinat"
+    },
+    {
+        breakfast: "Rührei + Vollkornbrot",
+        lunch: "Putenwrap",
+        dinner: "Reispfanne Gemüse"
+    },
+    {
+        breakfast: "Proteinshake + Banane",
+        lunch: "Kartoffeln + Quark",
+        dinner: "Bowl mit Gemüse"
+    },
+    {
+        breakfast: "Magerquark + Hafer",
+        lunch: "Reis-Chili Bowl",
+        dinner: "Thunfischsalat"
+    },
+    {
+        breakfast: "Haferflocken + Apfel",
+        lunch: "Couscous + Hähnchen",
+        dinner: "Gemüse Omelette"
+    },
+    {
+        breakfast: "Vollkornbrot + Frischkäse",
+        lunch: "Lachs Bowl",
+        dinner: "Reis + Ei + Spinat"
+    },
+    {
+        breakfast: "Protein Pancakes",
+        lunch: "Wrap mit Gemüse",
+        dinner: "Kartoffelpfanne"
+    },
+    {
+        breakfast: "Toast + Eier",
+        lunch: "Vollkornnudeln + Gemüse",
+        dinner: "Gemischter Salat"
+    },
+    {
+        breakfast: "Joghurt + Müsli",
+        lunch: "Burrito Bowl",
+        dinner: "Hähnchen, Nudeln, Gemüse"
+    }
+];
+
+// Einkaufslisten – passend zu den Mahlzeiten
+const shoppingLists = [
+    ["Haferflocken", "Beeren", "Honig", "Hähnchen", "Reis", "Brokkoli", "Gemüse", "Eier"],
+    ["Joghurt", "Früchte", "Vollkornnudeln", "Pesto", "Tomaten", "Lachs", "Kartoffeln", "Spinat"],
+    ["Eier", "Vollkornbrot", "Pute", "Wraps", "Reis", "Gemüse"],
+    ["Banane", "Proteinpulver", "Kartoffeln", "Quark", "Gemüse"],
+    ["Magerquark", "Hafer", "Reis", "Kidneybohnen", "Thunfisch", "Salat"],
+    ["Haferflocken", "Apfel", "Couscous", "Hähnchen", "Gemüse"],
+    ["Vollkornbrot", "Frischkäse", "Lachs", "Reis", "Spinat"],
+    ["Pancake Mix", "Obst", "Wraps", "Gemüse", "Kartoffeln"],
+    ["Toast", "Eier", "Vollkornnudeln", "Gemüse", "Salat"],
+    ["Joghurt", "Müsli", "Reis", "Hähnchen", "Nudeln", "Gemüse"]
+];
+
+// Dropdown füllen
+function loadWeeks() {
+    const select = document.getElementById("weekSelect");
+    weeklyMeals.forEach((_, i) => {
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = `Woche ${i + 1}`;
+        select.appendChild(option);
+    });
+}
+
+// Mahlzeiten anzeigen
+function renderMeals() {
+    const week = document.getElementById("weekSelect").value;
+    const meals = weeklyMeals[week];
+    const list = document.getElementById("mealList");
+
+    list.innerHTML = `
+        <div class="meal-item">🥣 Frühstück: ${meals.breakfast}</div>
+        <div class="meal-item">🍛 Mittagessen: ${meals.lunch}</div>
+        <div class="meal-item">🍽️ Abendessen: ${meals.dinner}</div>
+    `;
+
+    renderShoppingList();
+}
+
+// Einkaufsliste anzeigen
+function renderShoppingList() {
+    const week = document.getElementById("weekSelect").value;
+    const list = document.getElementById("shoppingList");
+
+    list.innerHTML = shoppingLists[week]
+        .map(item => `<div class="shopping-item">• ${item}</div>`)
+        .join("");
+}
+
+// ----------------------------
+// Gewicht speichern & anzeigen
+// ----------------------------
+
+function saveWeight() {
+    const date = document.getElementById("weightDate").value;
+    const kg = document.getElementById("weightNumber").value;
+
+    if (!date || !kg) return alert("Datum und Gewicht eingeben!");
+
+    const data = JSON.parse(localStorage.getItem("weights") || "[]");
+
+    const existing = data.find(entry => entry.date === date);
+    if (existing) existing.weight = kg;
+    else data.push({ date, weight: kg });
+
+    localStorage.setItem("weights", JSON.stringify(data));
+    renderWeights();
+}
+
+function renderWeights() {
+    const history = document.getElementById("weightHistory");
+    const data = JSON.parse(localStorage.getItem("weights") || "[]");
+
+    history.innerHTML = data
+        .map(entry => `<div class="weight-item">${entry.date}: <b>${entry.weight} kg</b></div>`)
+        .join("");
+}
+
+// Init
+loadWeeks();
+renderMeals();
+renderWeights();
+
+document.getElementById("weekSelect").addEventListener("change", renderMeals);
+</script>
+
+</body>
+</html>
