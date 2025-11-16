@@ -2,680 +2,607 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>10-Wochen Ernährungsplan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
-    :root {
-      --bg: #0f1115;
-      --card: #181b22;
-      --accent: #34c759;
-      --accent-soft: rgba(52, 199, 89, 0.15);
-      --text: #f5f5f5;
-      --text-soft: #a0a4b8;
-      --border: #2a2e3a;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
     body {
+      font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #111;
+      color: #eee;
       margin: 0;
       padding: 16px;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-      background: radial-gradient(circle at top, #1b2230 0, #05060a 55%, #020308 100%);
-      color: var(--text);
     }
-
-    h1 {
-      font-size: 22px;
-      margin: 0 0 4px;
+    h1, h2 {
+      color: #4CAF50;
+      margin-top: 0;
     }
-
-    h2 {
-      font-size: 18px;
-      margin: 16px 0 8px;
-    }
-
-    p {
-      margin: 4px 0;
-      color: var(--text-soft);
-      font-size: 14px;
-    }
-
-    .app-header {
-      margin-bottom: 16px;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      background: var(--accent-soft);
-      color: var(--accent);
-    }
-
-    .tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .tab {
-      flex: 1;
-      text-align: center;
-      padding: 10px;
-      border-radius: 999px;
-      font-size: 13px;
-      border: 1px solid var(--border);
-      color: var(--text-soft);
-      background: rgba(15,17,21,0.7);
-    }
-
-    .tab.active {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: var(--accent-soft);
-    }
-
     .card {
-      background: rgba(9, 11, 17, 0.92);
-      border-radius: 16px;
-      padding: 14px 14px 10px;
-      border: 1px solid rgba(255,255,255,0.04);
-      box-shadow: 0 16px 40px rgba(0,0,0,0.7);
-      margin-bottom: 12px;
+      background: #1f1f1f;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
     }
-
-    .row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .row + .row {
-      margin-top: 6px;
-    }
-
-    .select-row {
-      display: flex;
-      gap: 8px;
-      margin: 8px 0 4px;
-    }
-
-    select {
-      flex: 1;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(10, 12, 18, 0.95);
-      color: var(--text);
-      font-size: 13px;
-      outline: none;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.03);
-      padding: 4px 10px;
-      font-size: 11px;
-      color: var(--text-soft);
-    }
-
-    .chip strong {
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    .day-card {
-      margin-top: 6px;
-      padding-top: 8px;
-      border-top: 1px solid rgba(255,255,255,0.04);
-    }
-
-    .day-title {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .meal {
-      padding: 6px 0;
-      border-bottom: 1px dashed rgba(255,255,255,0.06);
-    }
-
-    .meal:last-child {
-      border-bottom: none;
-    }
-
-    .meal-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      margin-bottom: 2px;
-    }
-
-    .meal-type {
-      color: var(--text-soft);
-    }
-
-    .meal-kcal {
-      color: var(--accent);
-      font-size: 12px;
-    }
-
-    .meal-title {
-      font-size: 13px;
-      font-weight: 500;
-    }
-
-    .meal-amount {
-      font-size: 12px;
-      color: var(--text-soft);
-    }
-
-    .day-summary {
-      margin-top: 4px;
-      font-size: 12px;
-      color: var(--text-soft);
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .day-summary strong {
-      color: var(--accent);
-    }
-
-    .section-title-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
-
-    .section-title-row small {
-      font-size: 11px;
-      color: var(--text-soft);
-    }
-
-    .shopping-item {
-      font-size: 12px;
-      padding: 3px 0;
-      border-bottom: 1px dashed rgba(255,255,255,0.05);
-    }
-
-    .shopping-item:last-child {
-      border-bottom: none;
-    }
-
-    .weight-inputs input {
+    select, input {
       width: 100%;
-      margin-bottom: 6px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(10, 12, 18, 0.95);
-      color: var(--text);
-      padding: 7px 10px;
-      font-size: 13px;
+      padding: 8px;
+      margin: 4px 0 8px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #181818;
+      color: #eee;
+      font-size: 0.9rem;
     }
-
     button {
+      background: #4CAF50;
       border: none;
-      border-radius: 999px;
-      background: linear-gradient(135deg, #34c759, #0ba84b);
       color: #fff;
-      padding: 8px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      margin-top: 4px;
+      padding: 8px 12px;
+      border-radius: 6px;
       cursor: pointer;
-      width: 100%;
+      font-size: 0.9rem;
+      margin-top: 6px;
     }
-
-    .weight-item {
-      font-size: 12px;
-      padding: 3px 0;
-      border-bottom: 1px dashed rgba(255,255,255,0.06);
-      color: var(--text-soft);
+    .meal-item, .shopping-item, .weight-item {
+      padding: 4px 0;
+      border-bottom: 1px solid #333;
+      font-size: 0.9rem;
     }
-
+    .meal-item:last-child,
+    .shopping-item:last-child,
     .weight-item:last-child {
       border-bottom: none;
     }
-
-    @media (min-width: 768px) {
-      body {
-        max-width: 720px;
-        margin: 0 auto;
-      }
+    .kcal {
+      color: #ffb74d;
+      font-weight: 600;
     }
+    details summary {
+      cursor: pointer;
+      list-style: none;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::before {
+      content: "▶ ";
+      font-size: 0.75rem;
+    }
+    details[open] summary::before {
+      content: "▼ ";
+    }
+    small { color: #aaa; }
   </style>
 </head>
 <body>
-  <div class="app-header">
-    <div class="badge">
-      🥗 10-Wochen Abnehmplan
-    </div>
-    <h1>Von 97 kg Richtung 90 kg</h1>
-    <p>3 Mahlzeiten pro Tag · ca. 1.750–1.900 kcal/Tag · ohne Sportpflicht</p>
-  </div>
 
-  <div class="tabs">
-    <div class="tab active" id="tab-plan" onclick="switchTab('plan')">Plan</div>
-    <div class="tab" id="tab-shopping" onclick="switchTab('shopping')">Einkaufsliste</div>
-    <div class="tab" id="tab-weight" onclick="switchTab('weight')">Gewicht</div>
-  </div>
+<h1>10-Wochen Ernährungsplan</h1>
+<p>Ca. 1750–1900 kcal pro Tag • High Protein + etwas mediterran • 3 Mahlzeiten/Tag</p>
 
-  <!-- PLAN -->
-  <div id="view-plan">
-    <div class="card">
-      <div class="section-title-row">
-        <h2>Wochenübersicht</h2>
-        <small id="weekKcalLabel"></small>
-      </div>
-      <div class="select-row">
-        <select id="weekSelect" onchange="renderWeek()"></select>
-      </div>
-      <p>Jede Woche hat 7 Tage mit 3 Mahlzeiten (Frühstück, Mittag, Abendessen),
-         inklusive Mengen & Kalorien. Die 10 Wochen verwenden denselben Wochenrhythmus.</p>
-    </div>
+<div class="card">
+  <h2>Woche & Tag wählen</h2>
+  <label>Woche (1–10):</label>
+  <select id="weekSelect"></select>
 
-    <div id="daysContainer"></div>
-  </div>
+  <label>Tag:</label>
+  <select id="daySelect"></select>
+</div>
 
-  <!-- SHOPPING -->
-  <div id="view-shopping" style="display:none;">
-    <div class="card">
-      <div class="section-title-row">
-        <h2>Einkaufsliste Woche</h2>
-        <small id="shoppingWeekLabel"></small>
-      </div>
-      <div class="select-row">
-        <select id="shoppingWeekSelect" onchange="renderShopping()"></select>
-      </div>
-      <p>Richtwerte für eine Person · 1 Woche · 3 Mahlzeiten/Tag.</p>
-    </div>
-    <div class="card" id="shoppingList"></div>
-  </div>
+<div class="card">
+  <h2>Plan für diesen Tag</h2>
+  <div id="dayMeals"></div>
+  <p><b>Gesamtkalorien:</b> <span id="dayTotal" class="kcal"></span> kcal</p>
+  <small>Alle Werte sind Schätzungen – Zielbereich etwa 1750–1900 kcal.</small>
+</div>
 
-  <!-- WEIGHT -->
-  <div id="view-weight" style="display:none;">
-    <div class="card">
-      <h2>Gewicht tracken</h2>
-      <p>Starte bei 97 kg · Ziel ~90 kg in 10 Wochen.</p>
-      <div class="weight-inputs">
-        <input type="date" id="weightDate">
-        <input type="number" step="0.1" id="weightNumber" placeholder="Gewicht in kg">
-      </div>
-      <button onclick="saveWeight()">Speichern</button>
-    </div>
-    <div class="card">
-      <div class="section-title-row">
-        <h2>Verlauf</h2>
-        <small>lokal auf deinem Gerät gespeichert</small>
-      </div>
-      <div id="weightHistory"></div>
-    </div>
-  </div>
+<div class="card">
+  <h2>Rezepte zu diesem Tag</h2>
+  <div id="dayRecipes"></div>
+</div>
 
-  <script>
-    // -----------------------------
-    // Daten: Basis-Woche (7 Tage)
-    // -----------------------------
+<div class="card">
+  <h2>Einkaufsliste für die Woche</h2>
+  <div id="shoppingList"></div>
+  <small>Mengen sind grob für 1 Person für 7 Tage. Falls du größer/hungriger bist, etwas aufrunden.</small>
+</div>
 
-    const baseWeekDays = [
-      {
-        name: "Montag",
-        meals: [
-          {
-            type: "Frühstück",
-            title: "Overnight Oats mit Beeren",
-            amount: "60 g Haferflocken, 200 ml (Pflanzen-)Milch, 100 g Beeren, 10 g Nüsse",
-            kcal: 480
-          },
-          {
-            type: "Mittag",
-            title: "Hähnchen-Reis-Bowl",
-            amount: "150 g Hähnchenbrust, 80 g Reis (roh), 150 g Brokkoli, 10 g Öl",
-            kcal: 680
-          },
-          {
-            type: "Abendessen",
-            title: "Skyr mit Obst & Nüssen",
-            amount: "250 g Skyr, 1 Apfel, 10 g Nüsse",
-            kcal: 420
-          }
-        ]
-      },
-      {
-        name: "Dienstag",
-        meals: [
-          {
-            type: "Frühstück",
-            title: "Rührei & Vollkornbrot",
-            amount: "2 Eier, 1 Eiweiß, 2 Scheiben Vollkornbrot, Tomate/Gurke",
-            kcal: 450
-          },
-          {
-            type: "Mittag",
-            title: "Vollkornnudeln mit Pesto & Gemüse",
-            amount: "80 g Vollkornnudeln (roh), 30 g Pesto, 150 g Gemüse",
-            kcal: 700
-          },
-          {
-            type: "Abendessen",
-            title: "Großer gemischter Salat mit Thunfisch",
-            amount: "150 g gemischter Salat, 1 Dose Thunfisch in Wasser, 1 EL Öl",
-            kcal: 420
-          }
-        ]
-      },
-      {
-        name: "Mittwoch",
-        meals: [
-          {
-            type: "Frühstück",
-            title: "Magerquark-Bowl",
-            amount: "250 g Magerquark, 40 g Haferflocken, 100 g Beeren",
-            kcal: 470
-          },
-          {
-            type: "Mittag",
-            title: "Reis-Chili Bowl",
-            amount: "70 g Reis (roh), 150 g Rinderhack mager, Bohnen, Mais, Tomaten",
-            kcal: 720
-          },
-          {
-            type: "Abendessen",
-            title: "Vollkornbrot mit Pute & Gemüse",
-            amount: "2 Scheiben Vollkornbrot, 60 g Putenbrustaufschnitt, Gemüse",
-            kcal: 380
-          }
-        ]
-      },
-      {
-        name: "Donnerstag",
-        meals: [
-          {
-            type: "Frühstück",
-            title: "Proteinshake + Banane",
-            amount: "30 g Proteinpulver, 300 ml Wasser/Milch, 1 Banane",
-            kcal: 350
-          },
-          {
-            type: "Mittag",
-            title: "Kartoffeln mit Kräuterquark",
-            amount: "300 g Kartoffeln, 200 g Magerquark, Kräuter, 1 TL Öl",
-            kcal: 650
-          },
-          {
-            type: "Abendessen",
-            title: "Gemüsepfanne mit Ei",
-            amount: "200 g gemischtes Gemüse, 2 Eier, 1 TL Öl",
-            kcal: 450
-          }
-        ]
-      },
-      {
-        name: "Freitag",
-        meals: [
-          {
-            type: "Frühstück",
-            title: "Joghurt mit Müsli",
-            amount: "200 g Joghurt (1,5 %), 40 g Müsli, 1 kleine Banane",
-            kcal: 480
-          },
-          {
-            type: "Mittag",
-            title: "Lachs mit Reis & Spinat",
-            amount: "120 g Lachs, 70 g Reis (roh), 150 g Spinat, 1 TL Öl",
-            kcal: 720
-          },
-          {
-            type: "Abendessen",
-            title: "Gemüseomelette",
-            amount: "2 Eier, 1 Eiweiß, 150 g Gemüse",
-            kcal: 380
-          }
-        ]
-      },
-      {
-        name: "Samstag",
-        meals: [
-          {
-            type: "Frühstück",
-            title: "Protein-Pancakes",
-            amount: "50 g Haferflocken, 150 g Magerquark, 1 Ei, etwas Süße",
-            kcal: 500
-          },
-          {
-            type: "Mittag",
-            title: "Burrito-Bowl",
-            amount: "70 g Reis (roh), Bohnen, Mais, Hähnchen 120 g, Salsa",
-            kcal: 760
-          },
-          {
-            type: "Abendessen",
-            title: "Thunfisch- oder Hähnchensalat",
-            amount: "150 g Salat, 100 g Hähnchen oder Thunfisch, 1 EL Öl",
-            kcal: 430
-          }
-        ]
-      },
-      {
-        name: "Sonntag",
-        meals: [
-          {
-            type: "Frühstück",
-            title: "Brötchen light",
-            amount: "1 Vollkornbrötchen, 20 g Frischkäse light, Pute, Gemüse",
-            kcal: 430
-          },
-          {
-            type: "Mittag",
-            title: "Hähnchen-Nudelpfanne",
-            amount: "80 g Vollkornnudeln (roh), 120 g Hähnchen, 150 g Gemüse, 1 TL Öl",
-            kcal: 720
-          },
-          {
-            type: "Abendessen",
-            title: "Skyr mit Beeren",
-            amount: "250 g Skyr, 100 g Beeren",
-            kcal: 330
-          }
-        ]
-      }
-    ];
+<div class="card">
+  <h2>Gewicht tracken</h2>
+  <input type="date" id="weightDate">
+  <input type="number" id="weightNumber" placeholder="Gewicht in kg">
+  <button id="saveWeightBtn">Speichern</button>
+  <div id="weightHistory"></div>
+</div>
 
-    // 10 Wochen mit derselben Basiswoche
-    const weeks = Array.from({ length: 10 }, (_, i) => ({
-      weekNumber: i + 1,
-      days: baseWeekDays
-    }));
+<div class="card">
+  <h2>Alle Rezepte (Übersicht)</h2>
+  <div id="allRecipes"></div>
+</div>
 
-    // Einkaufslisten – Richtwerte pro Woche für 1 Person
-    const baseShopping = [
-      "Haferflocken: ~500 g",
-      "Vollkornbrot / -brötchen: 1–2 Packungen",
-      "Reis & Vollkornnudeln: je ~500 g",
-      "Kartoffeln: ~1,5 kg",
-      "Magerquark / Skyr / Joghurt: ~3–4 kg gesamt",
-      "Hähnchenbrust: ~1,2–1,5 kg",
-      "Mageres Rinderhack: ~300 g",
-      "Lachs: ~300–400 g",
-      "Thunfisch in Dosen: 2–3 Dosen",
-      "Eier: 10–12 Stück",
-      "Gemischtes Gemüse (frisch/TK): 3–4 kg",
-      "Blattsalat / Tomaten / Gurken / Paprika",
-      "Bohnen & Mais (Dose oder TK)",
-      "Obst (Äpfel, Bananen, Beeren): ~2–3 kg",
-      "Nüsse / Kerne: 100–150 g",
-      "Pesto, Öl, Gewürze, Kräuter"
-    ];
+<script>
+// ----------------------------
+// Rezepte mit Mengen & Kalorien
+// ----------------------------
 
-    const shoppingByWeek = Array.from({ length: 10 }, () => baseShopping);
+const recipes = [
+  {
+    id: "overnightOats",
+    name: "Overnight Oats mit Beeren",
+    portions: 1,
+    kcalPerPortion: 430,
+    ingredients: [
+      "50 g Haferflocken",
+      "200 g Skyr (oder Naturjoghurt mager)",
+      "100 ml Milch oder Wasser",
+      "80 g Beeren (frisch oder TK)",
+      "5 g Honig oder Süßstoff nach Wahl"
+    ],
+    steps: [
+      "Haferflocken, Skyr und Milch/Wasser in eine Schüssel oder ein Glas geben.",
+      "Gut verrühren, bis eine cremige Masse entsteht.",
+      "Beeren unterheben oder oben drauf verteilen.",
+      "Mit etwas Honig oder Süßstoff abschmecken.",
+      "Über Nacht im Kühlschrank ziehen lassen."
+    ]
+  },
+  {
+    id: "quarkBowl",
+    name: "Quark-Bowl Banane-Mandel",
+    portions: 1,
+    kcalPerPortion: 450,
+    ingredients: [
+      "250 g Magerquark",
+      "30 g Haferflocken",
+      "1 mittelgroße Banane (ca. 100 g)",
+      "15 g Mandeln",
+      "etwas Wasser oder Milch zum Glattrühren"
+    ],
+    steps: [
+      "Quark in eine Schüssel geben und mit etwas Wasser/Milch cremig rühren.",
+      "Haferflocken unterrühren.",
+      "Banane in Scheiben schneiden und dazugeben.",
+      "Mandeln grob hacken und oben drauf streuen."
+    ]
+  },
+  {
+    id: "proteinMuffins",
+    name: "Protein-Muffins (Mealprep)",
+    portions: 6, // 6 Muffins
+    kcalPerPortion: 140,
+    ingredients: [
+      "2 reife Bananen (ca. 200 g)",
+      "2 Eier",
+      "250 g Magerquark",
+      "120 g Haferflocken",
+      "10 g Backpulver"
+    ],
+    steps: [
+      "Backofen auf 180 °C vorheizen.",
+      "Bananen zerdrücken, mit Eiern und Quark verrühren.",
+      "Haferflocken und Backpulver unterheben.",
+      "Teig in 6 Muffinförmchen füllen.",
+      "Ca. 20–25 Minuten backen, abkühlen lassen.",
+      "Im Kühlschrank 3–4 Tage haltbar, ideal als Frühstück oder Snack."
+    ]
+  },
+  {
+    id: "chickenRice",
+    name: "Hähnchen-Reis-Gemüse-Bowl",
+    portions: 3,
+    kcalPerPortion: 600,
+    ingredients: [
+      "450 g Hähnchenbrust (150 g pro Portion)",
+      "210 g Reis roh (70 g pro Portion)",
+      "600 g Gemüse (z.B. Brokkoli, Paprika, Zucchini)",
+      "1 EL Olivenöl (ca. 10 g)",
+      "Gewürze (Salz, Pfeffer, Paprika, Knoblauch)"
+    ],
+    steps: [
+      "Reis nach Packungsanleitung kochen.",
+      "Hähnchen in Stücke schneiden, würzen und in etwas Öl anbraten.",
+      "Gemüse schneiden und mitbraten oder dünsten.",
+      "Alles auf 3 Boxen verteilen (Mealprep)."
+    ]
+  },
+  {
+    id: "tunaPasta",
+    name: "Thunfisch-Vollkornpasta",
+    portions: 3,
+    kcalPerPortion: 580,
+    ingredients: [
+      "210 g Vollkornnudeln roh (70 g pro Portion)",
+      "3 Dosen Thunfisch im Wasser (à ca. 120 g, abgetropft)",
+      "600 g gehackte Tomaten (Dose oder Packung)",
+      "150 g Mais oder Paprika",
+      "Gewürze (Oregano, Basilikum, Salz, Pfeffer)"
+    ],
+    steps: [
+      "Vollkornnudeln kochen.",
+      "Thunfisch abgießen.",
+      "Tomaten mit Gewürzen erhitzen, Mais/Paprika dazugeben.",
+      "Thunfisch unterrühren, dann Nudeln untermischen.",
+      "Auf 3 Portionen verteilen."
+    ]
+  },
+  {
+    id: "chili",
+    name: "Chili con Carne (mager)",
+    portions: 4,
+    kcalPerPortion: 540,
+    ingredients: [
+      "600 g mageres Rinderhack",
+      "2 Dosen Kidneybohnen (je ~240 g Abtropfgewicht)",
+      "1 Dose Mais (~150 g Abtropfgewicht)",
+      "800 g gehackte Tomaten",
+      "1–2 Zwiebeln",
+      "Gewürze (Chili, Paprika, Salz, Pfeffer)"
+    ],
+    steps: [
+      "Hackfleisch in einer großen Pfanne oder einem Topf anbraten.",
+      "Zwiebeln kleinschneiden und mit anbraten.",
+      "Tomaten, Bohnen und Mais hinzugeben.",
+      "Mit Chili, Paprika, Salz und Pfeffer abschmecken.",
+      "Ca. 20 Minuten köcheln lassen und auf 4 Portionen aufteilen."
+    ]
+  },
+  {
+    id: "salmonPotato",
+    name: "Lachs mit Kartoffeln & Gemüse",
+    portions: 3,
+    kcalPerPortion: 620,
+    ingredients: [
+      "450–500 g Lachsfilet (ca. 150–170 g pro Portion)",
+      "600 g Kartoffeln (200 g pro Portion)",
+      "600 g Gemüse (z.B. Zucchini, Paprika, Brokkoli)",
+      "1–2 EL Olivenöl",
+      "Zitrone, Salz, Pfeffer"
+    ],
+    steps: [
+      "Backofen auf 180–200 °C vorheizen.",
+      "Kartoffeln in Stücke schneiden, mit etwas Öl und Salz mischen, ca. 25–30 Min backen.",
+      "Lachs würzen (Salz, Pfeffer, Zitrone) und die letzten 12–15 Min mit in den Ofen legen.",
+      "Gemüse garen (mitbacken oder in der Pfanne).",
+      "Alles auf 3 Portionen verteilen."
+    ]
+  },
+  {
+    id: "couscousTurkey",
+    name: "Puten-Couscous-Pfanne",
+    portions: 3,
+    kcalPerPortion: 580,
+    ingredients: [
+      "450 g Putenbrust",
+      "210 g Couscous roh (70 g pro Portion)",
+      "600 g Gemüse (Paprika, Zucchini, Karotten)",
+      "Brühe, Gewürze, 1 EL Olivenöl"
+    ],
+    steps: [
+      "Couscous mit heißer Brühe übergießen und ziehen lassen.",
+      "Pute in Streifen schneiden, würzen und in wenig Öl anbraten.",
+      "Gemüse kleinschneiden und mitbraten.",
+      "Alles vermischen und auf 3 Portionen verteilen."
+    ]
+  },
+  {
+    id: "lightDinner",
+    name: "Leichtes Abendessen (Salat + Ei/Thunfisch)",
+    portions: 1,
+    kcalPerPortion: 450,
+    ingredients: [
+      "80 g Blattsalat oder gemischter Salat",
+      "100 g Gurke, 80 g Tomate",
+      "2 Eier oder 1 Dose Thunfisch im Wasser",
+      "10 g Olivenöl, Essig, Gewürze"
+    ],
+    steps: [
+      "Salat waschen und in eine Schüssel geben.",
+      "Gemüse klein schneiden und dazugeben.",
+      "Eier hart kochen und vierteln ODER Thunfisch abgießen.",
+      "Mit Olivenöl, Essig, Salz, Pfeffer anmachen."
+    ]
+  },
+  {
+    id: "skyrFruit",
+    name: "Skyr mit Obst & Nüssen",
+    portions: 1,
+    kcalPerPortion: 380,
+    ingredients: [
+      "250 g Skyr",
+      "1 Apfel oder 1 Banane (ca. 100–120 g)",
+      "10–15 g Nüsse",
+      "optional etwas Zimt oder Süßstoff"
+    ],
+    steps: [
+      "Skyr in eine Schüssel geben.",
+      "Obst in Stücke schneiden und dazugeben.",
+      "Nüsse hacken und darüber streuen.",
+      "Nach Wunsch mit Zimt/Süßstoff verfeinern."
+    ]
+  }
+];
 
-    // -----------------------------
-    // Rendering Plan
-    // -----------------------------
+const recipesById = {};
+recipes.forEach(r => { recipesById[r.id] = r; });
 
-    function initWeekSelects() {
-      const weekSelect = document.getElementById("weekSelect");
-      const shoppingWeekSelect = document.getElementById("shoppingWeekSelect");
+// ----------------------------
+// Täglicher Plan (Woche 1–10)
+// Jede Woche 7 Tage, 3 Rezepte/Tag
+// ----------------------------
 
-      weeks.forEach((w, idx) => {
-        const opt1 = document.createElement("option");
-        opt1.value = idx;
-        opt1.textContent = `Woche ${w.weekNumber}`;
-        weekSelect.appendChild(opt1);
+const dailyPlan = {
+  1: [ // Woche 1
+    { dayName: "Montag",    breakfast: "overnightOats", lunch: "chickenRice",  dinner: "lightDinner" },
+    { dayName: "Dienstag",  breakfast: "overnightOats", lunch: "chickenRice",  dinner: "skyrFruit" },
+    { dayName: "Mittwoch",  breakfast: "overnightOats", lunch: "chickenRice",  dinner: "lightDinner" },
+    { dayName: "Donnerstag",breakfast: "quarkBowl",     lunch: "tunaPasta",    dinner: "skyrFruit" },
+    { dayName: "Freitag",   breakfast: "quarkBowl",     lunch: "tunaPasta",    dinner: "lightDinner" },
+    { dayName: "Samstag",   breakfast: "proteinMuffins",lunch: "chickenRice",  dinner: "skyrFruit" },
+    { dayName: "Sonntag",   breakfast: "proteinMuffins",lunch: "tunaPasta",    dinner: "lightDinner" }
+  ],
+  2: [ // Woche 2: etwas mehr Fisch
+    { dayName: "Montag",    breakfast: "quarkBowl",     lunch: "tunaPasta",    dinner: "lightDinner" },
+    { dayName: "Dienstag",  breakfast: "quarkBowl",     lunch: "tunaPasta",    dinner: "skyrFruit" },
+    { dayName: "Mittwoch",  breakfast: "overnightOats", lunch: "salmonPotato", dinner: "lightDinner" },
+    { dayName: "Donnerstag",breakfast: "overnightOats", lunch: "salmonPotato", dinner: "skyrFruit" },
+    { dayName: "Freitag",   breakfast: "proteinMuffins",lunch: "chickenRice",  dinner: "lightDinner" },
+    { dayName: "Samstag",   breakfast: "proteinMuffins",lunch: "chili",        dinner: "skyrFruit" },
+    { dayName: "Sonntag",   breakfast: "quarkBowl",     lunch: "couscousTurkey", dinner: "lightDinner" }
+  ],
+  3: [
+    { dayName: "Montag",    breakfast: "proteinMuffins",lunch: "chili",        dinner: "skyrFruit" },
+    { dayName: "Dienstag",  breakfast: "quarkBowl",     lunch: "couscousTurkey", dinner: "lightDinner" },
+    { dayName: "Mittwoch",  breakfast: "overnightOats", lunch: "chickenRice",  dinner: "skyrFruit" },
+    { dayName: "Donnerstag",breakfast: "overnightOats", lunch: "tunaPasta",    dinner: "lightDinner" },
+    { dayName: "Freitag",   breakfast: "quarkBowl",     lunch: "chili",        dinner: "skyrFruit" },
+    { dayName: "Samstag",   breakfast: "proteinMuffins",lunch: "salmonPotato", dinner: "lightDinner" },
+    { dayName: "Sonntag",   breakfast: "overnightOats", lunch: "chickenRice",  dinner: "skyrFruit" }
+  ],
+  // Ab Woche 4 wiederholen wir den Stil – kannst du später selbst variieren
+  4: null,
+  5: null,
+  6: null,
+  7: null,
+  8: null,
+  9: null,
+  10: null
+};
 
-        const opt2 = document.createElement("option");
-        opt2.value = idx;
-        opt2.textContent = `Woche ${w.weekNumber}`;
-        shoppingWeekSelect.appendChild(opt2);
-      });
+// Für Wochen 4–10 einfach den Plan von Woche 3 kopieren (damit Code nicht riesig wird)
+for (let w = 4; w <= 10; w++) {
+  dailyPlan[w] = JSON.parse(JSON.stringify(dailyPlan[3]));
+}
+
+// grobe Einkaufslisten pro Woche (vereinfachte Version)
+const weeklyShopping = {
+  1: [
+    "Haferflocken ~1 kg",
+    "Skyr ~4–5 Becher",
+    "Beeren (frisch oder TK) ~1–2 kg",
+    "Magerquark ~3 Becher",
+    "Mandeln 200 g",
+    "Bananen/Äpfel ~1–2 kg",
+    "Hähnchenbrust ~1,8–2 kg",
+    "Reis ~1–1,5 kg",
+    "Gemüse (Brokkoli, Paprika, Zucchini) ~2 kg",
+    "Thunfisch in Dosen 4–6",
+    "Eier 10–15",
+    "Blattsalat & Mischgemüse für Salat",
+    "Olivenöl, Essig, Gewürze"
+  ],
+  2: [
+    "Magerquark 4–5 Becher",
+    "Skyr 3–4 Becher",
+    "Haferflocken ~1 kg",
+    "Beeren ~1 kg",
+    "Lachsfilet ~1,5 kg",
+    "Kartoffeln ~2–3 kg",
+    "Gemüse (Zucchini, Paprika, Brokkoli) ~2 kg",
+    "Thunfisch 4–6 Dosen",
+    "Vollkornnudeln ~1–1,5 kg",
+    "Hähnchenbrust ~1,5 kg",
+    "Hackfleisch ~600 g",
+    "Bohnen & Mais für Chili",
+    "Salat & Rohkost"
+  ],
+  3: [
+    "Haferflocken ~1 kg",
+    "Skyr & Quark je 3–4 Becher",
+    "Bananen & Äpfel ~2 kg",
+    "Mandeln/Nüsse 200–300 g",
+    "Hähnchenbrust ~1,5–2 kg",
+    "Reis ~1–1,5 kg",
+    "Gemüse-Mix ~2 kg",
+    "Thunfisch 4–5 Dosen",
+    "Lachs ~1,5 kg",
+    "Hackfleisch ~600 g",
+    "Bohnen, Mais, Tomaten für Chili",
+    "Salat, Gurken, Tomaten"
+  ]
+};
+for (let w = 4; w <= 10; w++) {
+  weeklyShopping[w] = weeklyShopping[3]; // Vereinfachung
+}
+
+// ----------------------------
+// Plan für Tag rendern
+// ----------------------------
+
+function getDayPlan(week, dayIdx) {
+  const weekPlan = dailyPlan[week];
+  if (!weekPlan) return null;
+  return weekPlan[dayIdx];
+}
+
+function renderDay() {
+  const week = parseInt(document.getElementById("weekSelect").value, 10);
+  const dayIdx = parseInt(document.getElementById("daySelect").value, 10);
+  const dayPlan = getDayPlan(week, dayIdx);
+  const dayMealsDiv = document.getElementById("dayMeals");
+  const dayRecipesDiv = document.getElementById("dayRecipes");
+  const totalSpan = document.getElementById("dayTotal");
+
+  if (!dayPlan) {
+    dayMealsDiv.textContent = "Kein Plan gefunden.";
+    dayRecipesDiv.textContent = "";
+    totalSpan.textContent = "–";
+    return;
+  }
+
+  const bf = recipesById[dayPlan.breakfast];
+  const lu = recipesById[dayPlan.lunch];
+  const di = recipesById[dayPlan.dinner];
+
+  const bfKcal = bf.kcalPerPortion;
+  const luKcal = lu.kcalPerPortion;
+  const diKcal = di.kcalPerPortion;
+  const total = bfKcal + luKcal + diKcal;
+
+  dayMealsDiv.innerHTML = `
+    <div class="meal-item">🥣 Frühstück: ${bf.name} – <span class="kcal">${bfKcal} kcal</span></div>
+    <div class="meal-item">🍛 Mittagessen: ${lu.name} – <span class="kcal">${luKcal} kcal</span></div>
+    <div class="meal-item">🍽️ Abendessen: ${di.name} – <span class="kcal">${diKcal} kcal</span></div>
+  `;
+  totalSpan.textContent = total.toFixed(0);
+
+  // Rezepte für diesen Tag
+  const used = [bf, lu, di];
+  dayRecipesDiv.innerHTML = used.map(r => {
+    const totalRecipeKcal = r.kcalPerPortion * r.portions;
+    return `
+      <details>
+        <summary>${r.name} <small>(ergibt ${r.portions} Port., ca. ${r.kcalPerPortion} kcal/Port., ~${totalRecipeKcal} kcal gesamt)</small></summary>
+        <p><b>Zutaten:</b></p>
+        <ul>${r.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
+        <p><b>Zubereitung:</b></p>
+        <ul>${r.steps.map(s => `<li>${s}</li>`).join("")}</ul>
+      </details>
+    `;
+  }).join("");
+}
+
+// ----------------------------
+// Einkaufs-Liste rendern
+// ----------------------------
+
+function renderShopping() {
+  const week = parseInt(document.getElementById("weekSelect").value, 10);
+  const listDiv = document.getElementById("shoppingList");
+  const items = weeklyShopping[week] || [];
+  listDiv.innerHTML = items.map(i => `<div class="shopping-item">• ${i}</div>`).join("");
+}
+
+// ----------------------------
+// Gewicht speichern & anzeigen
+// ----------------------------
+
+function loadWeights() {
+  try {
+    return JSON.parse(localStorage.getItem("weights_10wochenplan") || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveWeights(data) {
+  localStorage.setItem("weights_10wochenplan", JSON.stringify(data));
+}
+
+function renderWeights() {
+  const data = loadWeights().sort((a,b) => a.date.localeCompare(b.date));
+  const hist = document.getElementById("weightHistory");
+  hist.innerHTML = data.map(e => `
+    <div class="weight-item">${e.date}: <b>${parseFloat(e.weight).toFixed(1)} kg</b></div>
+  `).join("");
+}
+
+function setupWeight() {
+  const dateInput = document.getElementById("weightDate");
+  const weightInput = document.getElementById("weightNumber");
+  const btn = document.getElementById("saveWeightBtn");
+
+  if (!dateInput.value) {
+    dateInput.value = new Date().toISOString().slice(0,10);
+  }
+
+  btn.addEventListener("click", () => {
+    const date = dateInput.value;
+    const weight = parseFloat((weightInput.value || "").replace(",", "."));
+    if (!date || isNaN(weight)) {
+      alert("Bitte Datum und Gewicht eingeben.");
+      return;
     }
-
-    function calcDayKcal(day) {
-      return day.meals.reduce((sum, m) => sum + m.kcal, 0);
-    }
-
-    function calcWeekKcal(week) {
-      return week.days.reduce((sum, d) => sum + calcDayKcal(d), 0);
-    }
-
-    function renderWeek() {
-      const weekIndex = parseInt(document.getElementById("weekSelect").value, 10);
-      const week = weeks[weekIndex];
-      const container = document.getElementById("daysContainer");
-      const weekTotal = calcWeekKcal(week);
-
-      document.getElementById("weekKcalLabel").textContent =
-        `~${Math.round(weekTotal / 10) * 10} kcal/Woche (~${Math.round(weekTotal / 7)} kcal/Tag)`;
-
-      container.innerHTML = "";
-
-      week.days.forEach(day => {
-        const dayDiv = document.createElement("div");
-        dayDiv.className = "card day-card";
-
-        const dayKcal = calcDayKcal(day);
-
-        let mealsHtml = "";
-        day.meals.forEach(meal => {
-          mealsHtml += `
-            <div class="meal">
-              <div class="meal-header">
-                <span class="meal-type">${meal.type}</span>
-                <span class="meal-kcal">${meal.kcal} kcal</span>
-              </div>
-              <div class="meal-title">${meal.title}</div>
-              <div class="meal-amount">${meal.amount}</div>
-            </div>
-          `;
-        });
-
-        dayDiv.innerHTML = `
-          <div class="row">
-            <div class="day-title">${day.name}</div>
-            <div class="chip"><strong>${dayKcal}</strong> kcal / Tag</div>
-          </div>
-          ${mealsHtml}
-        `;
-
-        container.appendChild(dayDiv);
-      });
-    }
-
-    // -----------------------------
-    // Einkaufslisten
-    // -----------------------------
-
-    function renderShopping() {
-      const weekIndex = parseInt(document.getElementById("shoppingWeekSelect").value, 10);
-      const list = shoppingByWeek[weekIndex];
-      const container = document.getElementById("shoppingList");
-
-      document.getElementById("shoppingWeekLabel").textContent =
-        `Woche ${weekIndex + 1}`;
-
-      container.innerHTML = list
-        .map(item => `<div class="shopping-item">• ${item}</div>`)
-        .join("");
-    }
-
-    // -----------------------------
-    // Gewicht
-    // -----------------------------
-
-    function saveWeight() {
-      const date = document.getElementById("weightDate").value;
-      const kg = parseFloat(document.getElementById("weightNumber").value.replace(",", "."));
-
-      if (!date || isNaN(kg)) {
-        alert("Bitte Datum und Gewicht eingeben.");
-        return;
-      }
-
-      const data = JSON.parse(localStorage.getItem("weights") || "[]");
-      const existing = data.find(x => x.date === date);
-
-      if (existing) {
-        existing.weight = kg;
-      } else {
-        data.push({ date, weight: kg });
-      }
-
-      localStorage.setItem("weights", JSON.stringify(data));
-      renderWeights();
-      document.getElementById("weightNumber").value = "";
-    }
-
-    function renderWeights() {
-      const container = document.getElementById("weightHistory");
-      const data = JSON.parse(localStorage.getItem("weights") || "[]")
-        .sort((a, b) => a.date.localeCompare(b.date));
-
-      if (data.length === 0) {
-        container.innerHTML = "<p>Noch keine Einträge.</p>";
-        return;
-      }
-
-      container.innerHTML = data.map(entry =>
-        `<div class="weight-item">${entry.date}: <strong>${entry.weight.toFixed(1)} kg</strong></div>`
-      ).join("");
-    }
-
-    // -----------------------------
-    // Tabs
-    // -----------------------------
-
-    function switchTab(tab) {
-      document.getElementById("view-plan").style.display = tab === "plan" ? "" : "none";
-      document.getElementById("view-shopping").style.display = tab === "shopping" ? "" : "none";
-      document.getElementById("view-weight").style.display = tab === "weight" ? "" : "none";
-
-      document.getElementById("tab-plan").classList.toggle("active", tab === "plan");
-      document.getElementById("tab-shopping").classList.toggle("active", tab === "shopping");
-      document.getElementById("tab-weight").classList.toggle("active", tab === "weight");
-    }
-
-    // -----------------------------
-    // Init
-    // -----------------------------
-
-    initWeekSelects();
-    renderWeek();
-    renderShopping();
+    const data = loadWeights();
+    const existing = data.find(d => d.date === date);
+    if (existing) existing.weight = weight;
+    else data.push({ date, weight });
+    saveWeights(data);
     renderWeights();
-  </script>
+    weightInput.value = "";
+  });
+}
+
+// ----------------------------
+// Alle Rezepte (Übersicht)
+// ----------------------------
+
+function renderAllRecipes() {
+  const container = document.getElementById("allRecipes");
+  container.innerHTML = recipes.map(r => {
+    const totalRecipeKcal = r.kcalPerPortion * r.portions;
+    return `
+      <details>
+        <summary>${r.name} <small>(ergibt ${r.portions} Port., ca. ${r.kcalPerPortion} kcal/Port., ~${totalRecipeKcal} kcal gesamt)</small></summary>
+        <p><b>Zutaten:</b></p>
+        <ul>${r.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
+        <p><b>Zubereitung:</b></p>
+        <ul>${r.steps.map(s => `<li>${s}</li>`).join("")}</ul>
+      </details>
+    `;
+  }).join("");
+}
+
+// ----------------------------
+// Init
+// ----------------------------
+
+function init() {
+  const weekSelect = document.getElementById("weekSelect");
+  const daySelect = document.getElementById("daySelect");
+
+  // Wochen 1–10
+  for (let w = 1; w <= 10; w++) {
+    const opt = document.createElement("option");
+    opt.value = w;
+    opt.textContent = `Woche ${w}`;
+    weekSelect.appendChild(opt);
+  }
+  weekSelect.value = "1";
+
+  // Tage Mo–So
+  const names = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"];
+  names.forEach((n, idx) => {
+    const opt = document.createElement("option");
+    opt.value = idx;
+    opt.textContent = n;
+    daySelect.appendChild(opt);
+  });
+  daySelect.value = "0";
+
+  weekSelect.addEventListener("change", () => {
+    renderDay();
+    renderShopping();
+  });
+  daySelect.addEventListener("change", renderDay);
+
+  renderDay();
+  renderShopping();
+  setupWeight();
+  renderWeights();
+  renderAllRecipes();
+}
+
+init();
+</script>
+
 </body>
 </html>
