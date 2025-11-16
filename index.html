@@ -3,216 +3,432 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ernährungsplan App</title>
+    <title>10-Wochen Ernährungsplan</title>
     <style>
+        :root {
+            color-scheme: dark;
+        }
         body {
-            font-family: Arial, sans-serif;
-            background: #111;
-            color: #eee;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #050608;
+            color: #f5f5f5;
             margin: 0;
-            padding: 20px;
+            padding: 16px;
         }
-        h1, h2 {
+        h1 {
+            margin-top: 0;
+            text-align: center;
             color: #4CAF50;
+            font-size: 1.4rem;
         }
-        .week, .meals, .shopping-list, .weights {
-            background: #222;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+        h2 {
+            font-size: 1.1rem;
+            margin: 0 0 8px;
+            color: #eee;
+        }
+        .card {
+            background: #14151a;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        label {
+            font-size: 0.85rem;
+            color: #ccc;
+        }
+        select, input[type="date"], input[type="number"] {
+            width: 100%;
+            margin-top: 6px;
+            margin-bottom: 10px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: #1f2027;
+            color: #f5f5f5;
+            font-size: 0.9rem;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        .meal-item, .shopping-item, .weight-item {
+            padding: 6px 0;
+            border-bottom: 1px solid #23242c;
+            font-size: 0.9rem;
+        }
+        .meal-item:last-child,
+        .shopping-item:last-child,
+        .weight-item:last-child {
+            border-bottom: none;
+        }
+        .pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            background: #263238;
+            color: #b0bec5;
+            margin-bottom: 6px;
         }
         button {
             background: #4CAF50;
-            color: white;
+            color: #fff;
             border: none;
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 10px;
-            cursor: pointer;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 6px;
         }
-        input {
-            padding: 8px;
-            border-radius: 6px;
-            margin: 5px 0;
-            width: 100%;
+        button:active {
+            transform: scale(0.98);
         }
-        .meal-item, .shopping-item, .weight-item {
-            padding: 5px 0;
-            border-bottom: 1px solid #333;
+        .small {
+            font-size: 0.8rem;
+            color: #9e9e9e;
+        }
+        .flex-row {
+            display: flex;
+            gap: 8px;
+        }
+        .flex-row > div {
+            flex: 1;
         }
     </style>
 </head>
 <body>
 
-<h1>Ernährungsplan – 10 Wochen</h1>
+<h1>10-Wochen Abnehm-Ernährungsplan</h1>
 
-<div class="week">
-    <h2>Woche auswählen</h2>
-    <select id="weekSelect"></select>
+<div class="card">
+    <h2>Plan auswählen</h2>
+    <div class="flex-row">
+        <div>
+            <label for="weekSelect">Woche</label>
+            <select id="weekSelect"></select>
+        </div>
+        <div>
+            <label for="daySelect">Tag</label>
+            <select id="daySelect"></select>
+        </div>
+    </div>
+    <div class="small">
+        Ziel: ca. 1.750–1.900&nbsp;kcal/Tag, 3 Mahlzeiten, satt & alltagstauglich.<br>
+        Du kannst Tage innerhalb der Woche tauschen – Hauptsache, du bleibst ungefähr im Rahmen.
+    </div>
 </div>
 
-<div class="meals">
-    <h2>Mahlzeiten (3 pro Tag)</h2>
+<div class="card">
+    <h2>Heutige Mahlzeiten</h2>
     <div id="mealList"></div>
 </div>
 
-<div class="shopping-list">
-    <h2>Einkaufsliste</h2>
+<div class="card">
+    <h2>Einkaufsliste (Woche)</h2>
+    <div class="small">Alle Zutaten für die ausgewählte Woche (für 1 Person, bei Bedarf hochrechnen).</div>
     <div id="shoppingList"></div>
 </div>
 
-<div class="weights">
+<div class="card">
     <h2>Gewicht tracken</h2>
-    <input type="date" id="weightDate">
-    <input type="number" id="weightNumber" placeholder="Gewicht in kg">
-    <button onclick="saveWeight()">Speichern</button>
+    <div class="flex-row">
+        <div>
+            <label for="weightDate">Datum</label>
+            <input type="date" id="weightDate">
+        </div>
+        <div>
+            <label for="weightNumber">Gewicht (kg)</label>
+            <input type="number" id="weightNumber" step="0.1" placeholder="z.B. 96.3">
+        </div>
+    </div>
+    <button id="saveWeightBtn">Speichern</button>
+    <div class="small" style="margin-top:8px;">
+        Tipp: 1× pro Woche morgens nach dem Aufstehen wiegen, ohne Kleidung.
+    </div>
+    <h3 style="margin-top:14px;font-size:0.95rem;">Verlauf</h3>
     <div id="weightHistory"></div>
 </div>
 
 <script>
-// ----------------------------
-// 10 Wochen – wechselnde Mahlzeiten
-// ----------------------------
+// =============================
+// Daten: 10 Wochen, 7 Tage, 3 Mahlzeiten
+// =============================
 
-const weeklyMeals = [
+const dayNames = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"];
+
+// Für jede Woche ein Plan mit 7 Tagen
+// Du kannst Texte jederzeit ändern, der Code bleibt gleich.
+const plan = [
+    // Woche 1
     {
-        breakfast: "Haferflocken + Beeren + Honig",
-        lunch: "Hähnchen, Reis, Brokkoli",
-        dinner: "Gemüsepfanne + Eier"
+        days: [
+            { b: "Overnight Oats mit Beeren & Skyr", l: "Hähnchen, Vollkornreis & Brokkoli", d: "Gemüsepfanne mit Feta" },
+            { b: "Vollkornbrot mit Putenbrust & Gurke", l: "Thunfisch-Reis-Bowl", d: "Gemischter Salat mit Ei" },
+            { b: "Rührei (2–3 Eier) + Tomaten", l: "Vollkornnudeln mit Tomatensauce & Parmesan", d: "Magerquark mit Beeren & Nüssen" },
+            { b: "Skyr mit Apfel & Zimt", l: "Kartoffeln mit Kräuterquark & Karotten", d: "Hähnchenstreifen auf Salat" },
+            { b: "Haferflocken mit Banane & Erdnussmus", l: "Putenwrap (Vollkorn) mit Gemüse", d: "Gemüseomelette" },
+            { b: "Proteinshake + Obst", l: "Lachs, Kartoffeln & Spinat", d: "Rohkostteller mit Hummus" },
+            { b: "Magerquark mit Müsli (zuckerarm)", l: "Reispfanne mit Gemüse & Ei", d: "Tomaten-Mozzarella-Salat" }
+        ],
+        shopping: [
+            "Haferflocken", "Skyr/Magerquark", "Beeren (TK oder frisch)", "Bananen", "Äpfel", "Tomaten", "Gurke",
+            "Karotten", "Paprika", "Brokkoli", "Blattsalat/Salatmischung", "Spinat (TK)", "Kartoffeln", "Vollkornreis",
+            "Vollkornnudeln", "Vollkornbrot", "Vollkorn-Wraps",
+            "Hähnchenbrust", "Putenbrust", "Lachs (TK oder frisch)", "Eier",
+            "Thunfisch in Wasser", "Hüttenkäse/Quark", "Feta", "Mozzarella light",
+            "Hummus", "Olivenöl", "Nüsse (Mandeln/Walnüsse)", "Erdnussmus (100 % Erdnuss)",
+            "Gewürze, Kräuter, Salz, Pfeffer"
+        ]
+    },
+    // Woche 2
+    {
+        days: [
+            { b: "Joghurt (mager) mit Beeren & Hafer", l: "Hähnchen-Curry mit Reis & Gemüse", d: "Ofengemüse mit Feta" },
+            { b: "Vollkorntoast mit Rührei & Spinat", l: "Linsensuppe mit Vollkornbrot", d: "Thunfischsalat" },
+            { b: "Protein-Pancakes (Hafer + Ei)", l: "Putenstreifen mit Couscous & Gemüse", d: "Grüner Salat mit Kichererbsen" },
+            { b: "Magerquark mit Kiwi & Nüssen", l: "Vollkornnudeln mit Pesto & Tomaten", d: "Gemüsepfanne mit Ei" },
+            { b: "Overnight Oats mit Apfel & Zimt", l: "Burrito-Bowl mit Hähnchen", d: "Tomatensuppe mit Käse-Topping" },
+            { b: "Skyr mit Banane", l: "Lachs-Bowl (Reis, Spinat, Gurke)", d: "Gemüseteller + Hummus" },
+            { b: "Rührei + Vollkornbrot", l: "Kartoffel-Lauch-Pfanne mit Pute", d: "Joghurt mit Beeren" }
+        ],
+        shopping: [
+            "Joghurt mager", "Skyr", "Magerquark", "Haferflocken", "Couscous", "Linsen", "Kichererbsen (Dose)",
+            "Reis", "Vollkornnudeln", "Vollkorntoast/-brot", "Putenbrust", "Hähnchenbrust", "Lachs",
+            "Feta", "Hartkäse light", "Tomaten", "Gurke", "Paprika", "Lauch", "Spinat", "Kiwi", "Bananen", "Äpfel",
+            "TK-Gemüse nach Wahl", "Tomatensauce", "Pesto (basilikum)", "Hummus", "Gewürze (Curry, Paprika, Knoblauch)"
+        ]
+    },
+    // Woche 3
+    {
+        days: [
+            { b: "Haferbrei mit Banane & Zimt", l: "Hähnchen-Reis-Pfanne mit Gemüse", d: "Salat mit Ei & Mais" },
+            { b: "Skyr mit Beeren & Leinsamen", l: "Vollkornwrap mit Thunfisch & Gemüse", d: "Gemüseomelette" },
+            { b: "Vollkornbrot mit Frischkäse & Pute", l: "Lachs mit Süßkartoffel & Bohnen", d: "Quark mit Obst" },
+            { b: "Proteinshake + Apfel", l: "Pasta mit Tomatensauce & Rinderhack mager", d: "Rohkost mit Dip" },
+            { b: "Joghurt + Müsli (zuckerarm)", l: "Kartoffelauflauf light mit Brokkoli", d: "Salat mit Pute" },
+            { b: "Rührei & Spinat", l: "Burrito-Wrap mit Bohnen & Reis", d: "Joghurt mit Nüssen" },
+            { b: "Magerquark, Beeren, Honig (wenig)", l: "Gemüsesuppe mit Vollkornbrot", d: "Kleiner Proteinsnack (Quark/Shake)" }
+        ],
+        shopping: [
+            "Haferflocken", "Leinsamen", "Müsli (zuckerarm)", "Süßkartoffeln", "Mais (Dose)", "Bohnen (Dose)",
+            "Rinderhack mager", "Frischkäse light", "Putenbrust", "Hähnchenbrust", "Lachs",
+            "Eier", "Joghurt", "Quark", "Skyr", "Bananen", "Äpfel", "Beeren", "Paprika", "Tomaten", "Gurke",
+            "Brokkoli", "Spinat", "Salatmischung", "Vollkornnudeln", "Vollkornbrot", "Vollkorn-Wraps"
+        ]
+    },
+    // Woche 4
+    {
+        days: [
+            { b: "Overnight Oats mit Beeren", l: "Hähnchen-Gemüse-Bowl mit Reis", d: "Tomaten-Mozzarella-Salat" },
+            { b: "Rührei + Vollkorntoast", l: "Thunfisch-Pasta", d: "Gemüsesuppe" },
+            { b: "Skyr mit Apfel & Zimt", l: "Kartoffeln, Quark & Kräuter", d: "Gemüsepfanne mit Ei" },
+            { b: "Protein-Pancakes", l: "Putenbrust mit Couscous & Gemüse", d: "Salat mit Feta" },
+            { b: "Magerquark + Banane + Nüsse", l: "Lachs mit Reis & Brokkoli", d: "Rohkostteller" },
+            { b: "Joghurt + Müsli", l: "Hähnchen-Wraps", d: "Gemüseomelette" },
+            { b: "Haferflocken mit Obst", l: "Burrito-Bowl", d: "Quark mit Beeren" }
+        ],
+        shopping: [
+            "wie Woche 1/2 – Hafer, Joghurt, Quark, Skyr, Pute, Hähnchen, Lachs, Reis, Couscous, Kartoffeln, Gemüse, Salat, Feta, Mozzarella, Wraps"
+        ]
+    },
+    // Wochen 5–10 etwas knapper (Rotation ähnlicher Gerichte)
+    {
+        days: [
+            { b: "Haferbrei mit Apfel", l: "Hähnchen-Reis-Bowl", d: "Gemüsespieße mit Feta" },
+            { b: "Skyr + Beeren", l: "Thunfischsalat mit Brot", d: "Omelette" },
+            { b: "Joghurt + Müsli", l: "Putenwrap", d: "Gemüsesuppe" },
+            { b: "Rührei + Toast", l: "Lachs + Kartoffeln", d: "Salat mit Bohnen" },
+            { b: "Overnight Oats", l: "Burrito-Bowl", d: "Quark + Obst" },
+            { b: "Proteinshake + Obst", l: "Vollkornpasta + Tomatensauce", d: "Rohkostteller" },
+            { b: "Quark + Beeren", l: "Reispfanne mit Gemüse", d: "Joghurt + Nüsse" }
+        ],
+        shopping: ["Haferflocken, Milch/Haferdrink, Joghurt, Quark, Skyr, Hähnchen, Pute, Lachs, Thunfisch, Eier, Brot, Reis, Pasta, Kartoffeln, viel Gemüse, Salat, Bohnen, Nüsse"]
     },
     {
-        breakfast: "Griechischer Joghurt + Früchte",
-        lunch: "Vollkornnudeln + Pesto + Tomaten",
-        dinner: "Lachs + Kartoffeln + Spinat"
+        days: [
+            { b: "Magerquark + Banane", l: "Hähnchen-Curry mit Reis", d: "Gemüsepfanne" },
+            { b: "Joghurt + Beeren", l: "Linsensuppe", d: "Salat mit Ei" },
+            { b: "Haferbrei", l: "Thunfisch-Bowl", d: "Gemüseomelette" },
+            { b: "Skyr + Obst", l: "Putenbrust + Couscous", d: "Rohkost" },
+            { b: "Rührei + Brot", l: "Lachs-Bowl", d: "Quark + Obst" },
+            { b: "Overnight Oats", l: "Burrito-Bowl", d: "Gemüsesuppe" },
+            { b: "Protein-Pancakes", l: "Reispfanne", d: "Joghurt + Nüsse" }
+        ],
+        shopping: ["wie Woche 2 – Hülsenfrüchte, Reis, Couscous, Geflügel, Lachs, Milchprodukte, Gemüse, Salat"]
     },
     {
-        breakfast: "Rührei + Vollkornbrot",
-        lunch: "Putenwrap",
-        dinner: "Reispfanne Gemüse"
+        days: [
+            { b: "Haferbrei + Beeren", l: "Hähnchen + Kartoffeln", d: "Salat" },
+            { b: "Joghurt + Müsli", l: "Thunfisch-Wrap", d: "Rohkost" },
+            { b: "Skyr + Banane", l: "Vollkornpasta Bolognese light", d: "Quark" },
+            { b: "Rührei", l: "Puten-Reis-Pfanne", d: "Gemüsesuppe" },
+            { b: "Overnight Oats", l: "Lachs + Süßkartoffel", d: "Salat mit Feta" },
+            { b: "Proteinshake + Obst", l: "Burrito-Bowl", d: "Gemüseomelette" },
+            { b: "Quark + Beeren", l: "Reispfanne", d: "Joghurt" }
+        ],
+        shopping: ["Standard-Zutaten wie bisher – du bist jetzt in der Routine 😉"]
     },
     {
-        breakfast: "Proteinshake + Banane",
-        lunch: "Kartoffeln + Quark",
-        dinner: "Bowl mit Gemüse"
+        days: [
+            { b: "Haferbrei", l: "Hähnchen-Bowl", d: "Gemüsepfanne" },
+            { b: "Skyr + Obst", l: "Thunfischsalat", d: "Rührei" },
+            { b: "Joghurt + Müsli", l: "Putenwrap", d: "Gemüsesuppe" },
+            { b: "Quark + Beeren", l: "Lachs + Reis", d: "Salat" },
+            { b: "Overnight Oats", l: "Linsen-Curry", d: "Rohkost" },
+            { b: "Rührei + Brot", l: "Reispfanne", d: "Joghurt + Nüsse" },
+            { b: "Protein-Pancakes", l: "Burrito-Bowl", d: "Quark" }
+        ],
+        shopping: ["wie vorher – Fokus auf mageres Eiweiß, Vollkorn, Gemüse"]
     },
     {
-        breakfast: "Magerquark + Hafer",
-        lunch: "Reis-Chili Bowl",
-        dinner: "Thunfischsalat"
+        days: [
+            { b: "Haferflocken + Skyr", l: "Hähnchen-Reis-Pfanne", d: "Gemischter Salat" },
+            { b: "Joghurt + Obst", l: "Thunfisch-Pasta", d: "Gemüseomelette" },
+            { b: "Rührei + Toast", l: "Puten-Couscous", d: "Quark + Beeren" },
+            { b: "Overnight Oats", l: "Lachs + Kartoffeln", d: "Rohkost" },
+            { b: "Skyr + Banane", l: "Burrito-Bowl", d: "Salat" },
+            { b: "Quark + Müsli", l: "Reispfanne", d: "Joghurt + Nüsse" },
+            { b: "Proteinshake", l: "Gemüsesuppe + Brot", d: "Kleiner Snack (Quark/Obst)" }
+        ],
+        shopping: ["wie Woche 1 – klassischer Mix zum Abschluss der 10 Wochen"]
     },
     {
-        breakfast: "Haferflocken + Apfel",
-        lunch: "Couscous + Hähnchen",
-        dinner: "Gemüse Omelette"
-    },
-    {
-        breakfast: "Vollkornbrot + Frischkäse",
-        lunch: "Lachs Bowl",
-        dinner: "Reis + Ei + Spinat"
-    },
-    {
-        breakfast: "Protein Pancakes",
-        lunch: "Wrap mit Gemüse",
-        dinner: "Kartoffelpfanne"
-    },
-    {
-        breakfast: "Toast + Eier",
-        lunch: "Vollkornnudeln + Gemüse",
-        dinner: "Gemischter Salat"
-    },
-    {
-        breakfast: "Joghurt + Müsli",
-        lunch: "Burrito Bowl",
-        dinner: "Hähnchen, Nudeln, Gemüse"
+        days: [
+            { b: "Haferbrei + Beeren", l: "Hähnchen-Bowl", d: "Gemüsepfanne" },
+            { b: "Joghurt + Müsli", l: "Thunfischsalat", d: "Rührei" },
+            { b: "Skyr + Obst", l: "Puten-Wrap", d: "Gemüsesuppe" },
+            { b: "Quark + Banane", l: "Lachs + Reis", d: "Salat" },
+            { b: "Overnight Oats", l: "Linsen-Curry", d: "Rohkost" },
+            { b: "Protein-Pancakes", l: "Reispfanne", d: "Joghurt + Nüsse" },
+            { b: "Magerquark + Beeren", l: "Burrito-Bowl", d: "leichter Salat" }
+        ],
+        shopping: ["gleiche Basis-Lebensmittel wie zuvor – damit kannst du danach einfach weitermachen"]
     }
 ];
 
-// Einkaufslisten – passend zu den Mahlzeiten
-const shoppingLists = [
-    ["Haferflocken", "Beeren", "Honig", "Hähnchen", "Reis", "Brokkoli", "Gemüse", "Eier"],
-    ["Joghurt", "Früchte", "Vollkornnudeln", "Pesto", "Tomaten", "Lachs", "Kartoffeln", "Spinat"],
-    ["Eier", "Vollkornbrot", "Pute", "Wraps", "Reis", "Gemüse"],
-    ["Banane", "Proteinpulver", "Kartoffeln", "Quark", "Gemüse"],
-    ["Magerquark", "Hafer", "Reis", "Kidneybohnen", "Thunfisch", "Salat"],
-    ["Haferflocken", "Apfel", "Couscous", "Hähnchen", "Gemüse"],
-    ["Vollkornbrot", "Frischkäse", "Lachs", "Reis", "Spinat"],
-    ["Pancake Mix", "Obst", "Wraps", "Gemüse", "Kartoffeln"],
-    ["Toast", "Eier", "Vollkornnudeln", "Gemüse", "Salat"],
-    ["Joghurt", "Müsli", "Reis", "Hähnchen", "Nudeln", "Gemüse"]
-];
+// =============================
+// UI initialisieren
+// =============================
 
-// Dropdown füllen
-function loadWeeks() {
-    const select = document.getElementById("weekSelect");
-    weeklyMeals.forEach((_, i) => {
-        const option = document.createElement("option");
-        option.value = i;
-        option.textContent = `Woche ${i + 1}`;
-        select.appendChild(option);
+const weekSelect = document.getElementById("weekSelect");
+const daySelect = document.getElementById("daySelect");
+const mealList = document.getElementById("mealList");
+const shoppingList = document.getElementById("shoppingList");
+
+function initWeekSelect() {
+    plan.forEach((_, i) => {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = `Woche ${i + 1}`;
+        weekSelect.appendChild(opt);
     });
 }
 
-// Mahlzeiten anzeigen
-function renderMeals() {
-    const week = document.getElementById("weekSelect").value;
-    const meals = weeklyMeals[week];
-    const list = document.getElementById("mealList");
-
-    list.innerHTML = `
-        <div class="meal-item">🥣 Frühstück: ${meals.breakfast}</div>
-        <div class="meal-item">🍛 Mittagessen: ${meals.lunch}</div>
-        <div class="meal-item">🍽️ Abendessen: ${meals.dinner}</div>
-    `;
-
-    renderShoppingList();
+function initDaySelect(weekIndex) {
+    daySelect.innerHTML = "";
+    const week = plan[weekIndex];
+    week.days.forEach((_, i) => {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = dayNames[i];
+        daySelect.appendChild(opt);
+    });
 }
 
-// Einkaufsliste anzeigen
-function renderShoppingList() {
-    const week = document.getElementById("weekSelect").value;
-    const list = document.getElementById("shoppingList");
+function renderMeals() {
+    const w = parseInt(weekSelect.value, 10);
+    const d = parseInt(daySelect.value, 10);
+    const day = plan[w].days[d];
 
-    list.innerHTML = shoppingLists[week]
-        .map(item => `<div class="shopping-item">• ${item}</div>`)
+    mealList.innerHTML = `
+        <div class="meal-item"><span class="pill">Frühstück</span><br>${day.b}</div>
+        <div class="meal-item"><span class="pill">Mittagessen</span><br>${day.l}</div>
+        <div class="meal-item"><span class="pill">Abendessen</span><br>${day.d}</div>
+    `;
+}
+
+function renderShopping() {
+    const w = parseInt(weekSelect.value, 10);
+    const items = plan[w].shopping;
+    shoppingList.innerHTML = items
+        .map(i => `<div class="shopping-item">• ${i}</div>`)
         .join("");
 }
 
-// ----------------------------
-// Gewicht speichern & anzeigen
-// ----------------------------
+// =============================
+// Gewicht-Tracking (LocalStorage)
+// =============================
 
-function saveWeight() {
-    const date = document.getElementById("weightDate").value;
-    const kg = document.getElementById("weightNumber").value;
+const weightDateInput = document.getElementById("weightDate");
+const weightNumberInput = document.getElementById("weightNumber");
+const weightHistoryDiv = document.getElementById("weightHistory");
+const saveWeightBtn = document.getElementById("saveWeightBtn");
 
-    if (!date || !kg) return alert("Datum und Gewicht eingeben!");
+function loadWeights() {
+    try {
+        return JSON.parse(localStorage.getItem("weights_97to90") || "[]");
+    } catch {
+        return [];
+    }
+}
 
-    const data = JSON.parse(localStorage.getItem("weights") || "[]");
-
-    const existing = data.find(entry => entry.date === date);
-    if (existing) existing.weight = kg;
-    else data.push({ date, weight: kg });
-
-    localStorage.setItem("weights", JSON.stringify(data));
-    renderWeights();
+function saveWeights(list) {
+    localStorage.setItem("weights_97to90", JSON.stringify(list));
 }
 
 function renderWeights() {
-    const history = document.getElementById("weightHistory");
-    const data = JSON.parse(localStorage.getItem("weights") || "[]");
-
-    history.innerHTML = data
-        .map(entry => `<div class="weight-item">${entry.date}: <b>${entry.weight} kg</b></div>`)
+    const data = loadWeights().sort((a,b) => a.date.localeCompare(b.date));
+    if (!data.length) {
+        weightHistoryDiv.innerHTML = "<div class='small'>Noch keine Einträge.</div>";
+        return;
+    }
+    weightHistoryDiv.innerHTML = data
+        .map(e => `<div class="weight-item">${e.date}: <strong>${e.weight} kg</strong></div>`)
         .join("");
 }
 
+saveWeightBtn.addEventListener("click", () => {
+    const date = weightDateInput.value;
+    const weight = weightNumberInput.value.replace(",", ".");
+    if (!date || !weight) {
+        alert("Bitte Datum und Gewicht eingeben.");
+        return;
+    }
+    const n = parseFloat(weight);
+    if (Number.isNaN(n)) {
+        alert("Gewicht ist keine Zahl.");
+        return;
+    }
+    const list = loadWeights();
+    const existing = list.find(e => e.date === date);
+    if (existing) existing.weight = n;
+    else list.push({ date, weight: n });
+    saveWeights(list);
+    weightNumberInput.value = "";
+    renderWeights();
+});
+
+// =============================
 // Init
-loadWeeks();
+// =============================
+
+initWeekSelect();
+initDaySelect(0);
+weekSelect.value = "0";
+daySelect.value = "0";
 renderMeals();
+renderShopping();
 renderWeights();
 
-document.getElementById("weekSelect").addEventListener("change", renderMeals);
-</script>
+weekSelect.addEventListener("change", () => {
+    initDaySelect(parseInt(weekSelect.value, 10));
+    daySelect.value = "0";
+    renderMeals();
+    renderShopping();
+});
 
+daySelect.addEventListener("change", renderMeals);
+</script>
 </body>
 </html>
