@@ -1,555 +1,1096 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Ernährungsplan Daniel – Rezepte</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <title>Daniels Ernährungsplan – 10 Wochen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #111;
+      background: #050509;
       color: #f5f5f5;
-      padding: 1rem;
     }
     header {
+      background: linear-gradient(135deg, #111827, #020617);
+      color: white;
+      padding: 1.2rem 1.4rem;
       text-align: center;
-      margin-bottom: 1rem;
+      border-bottom: 1px solid #1f2937;
     }
     header h1 {
       margin: 0;
       font-size: 1.4rem;
     }
     header p {
-      margin: 0.2rem 0 0;
+      margin: 0.3rem 0 0;
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+    header span.name {
+      color: #f97373;
+      font-weight: 600;
+    }
+
+    .tabs {
+      display: flex;
+      background: #020617;
+      border-bottom: 1px solid #1f2937;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .tab {
+      flex: 1;
+      padding: 0.7rem;
+      text-align: center;
+      cursor: pointer;
       font-size: 0.9rem;
-      color: #ccc;
+      color: #9ca3af;
+      border-right: 1px solid #111827;
     }
-    .section-title {
-      margin-top: 1.4rem;
-      margin-bottom: 0.5rem;
-      font-size: 1.2rem;
-      color: #4caf50;
+    .tab:last-child { border-right: none; }
+    .tab.active {
+      color: #f9fafb;
+      font-weight: 600;
+      border-bottom: 2px solid #f97373;
+      background: #0b1120;
     }
+
+    main {
+      padding: 1rem;
+      max-width: 900px;
+      margin: 0 auto 2rem;
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
     .card {
-      background: #1c1c1c;
-      border-radius: 10px;
-      padding: 0.8rem 0.9rem;
+      background: #020617;
+      border-radius: 14px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid #111827;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.7);
+    }
+    .card h2, .card h3 {
+      margin-top: 0;
+      font-size: 1.05rem;
+    }
+    .pill {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      background: #111827;
+      color: #f97373;
+      margin-right: 0.3rem;
+    }
+    .kcal {
+      color: #facc15;
+      font-weight: 600;
+    }
+    .row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
       margin-bottom: 0.6rem;
     }
+    select, input {
+      padding: 0.4rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 0.85rem;
+      flex: 1;
+      min-width: 120px;
+    }
+    button {
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+      background: #f97373;
+      color: #020617;
+      font-weight: 600;
+    }
+    button.secondary {
+      background: #111827;
+      color: #e5e7eb;
+      border: 1px solid #1f2937;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+    th, td {
+      padding: 0.4rem 0.4rem;
+      border-bottom: 1px solid #111827;
+      text-align: left;
+    }
+    th {
+      background: #020617;
+      color: #e5e7eb;
+      font-weight: 600;
+    }
+    ul {
+      padding-left: 1.2rem;
+      margin-top: 0.3rem;
+    }
+    li { margin-bottom: 0.15rem; font-size: 0.85rem; }
+
     details summary {
       cursor: pointer;
+      font-size: 0.9rem;
       list-style: none;
-      font-weight: 600;
-      margin-bottom: 0.2rem;
+      color: #e5e7eb;
+      margin-bottom: 0.1rem;
     }
     details summary::-webkit-details-marker { display: none; }
     details summary::before {
       content: "▶ ";
-      font-size: 0.8rem;
-      color: #aaa;
+      font-size: 0.7rem;
+      color: #9ca3af;
     }
-    details[open] summary::before { content: "▼ "; }
-    .kcal {
-      font-size: 0.85rem;
-      color: #ffb74d;
-      font-weight: 600;
+    details[open] summary::before {
+      content: "▼ ";
     }
-    h3 {
-      margin: 0 0 0.2rem;
-      font-size: 1rem;
-    }
-    ul {
-      margin: 0.2rem 0 0.4rem;
-      padding-left: 1.1rem;
-    }
-    li { font-size: 0.9rem; margin-bottom: 0.1rem; }
-    .tag {
-      display: inline-block;
-      padding: 0.1rem 0.4rem;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      background: #263238;
-      color: #81d4fa;
-      margin-bottom: 0.3rem;
-    }
+
     .hint {
-      font-size: 0.8rem;
-      color: #aaa;
+      font-size: 0.75rem;
+      color: #9ca3af;
       margin-top: 0.3rem;
+    }
+
+    @media (min-width: 700px) {
+      header h1 { font-size: 1.6rem; }
+      .tab { font-size: 0.95rem; }
     }
   </style>
 </head>
 <body>
 <header>
-  <h1>Ernährungsplan – Daniel</h1>
-  <p>Warme Mittagsgerichte (Mealprep) & leichte Abendessen • ca. 1750–1900 kcal/Tag</p>
+  <h1>Ernährungsplan für <span class="name">Daniel</span></h1>
+  <p>10 Wochen · ca. 1.750–1.900 kcal/Tag · High Protein · warme Mittage · leichte Abende</p>
 </header>
 
-<section>
-  <h2 class="section-title">Warme Mittagsgerichte (Mealprep, ca. 500–700 kcal)</h2>
+<div class="tabs">
+  <div class="tab active" data-target="heute">Heute</div>
+  <div class="tab" data-target="plan">Wochenplan</div>
+  <div class="tab" data-target="rezepte-mittag">Mittag-Rezepte</div>
+  <div class="tab" data-target="rezepte-abend">Abend-Rezepte</div>
+  <div class="tab" data-target="gewicht">Gewicht</div>
+</div>
 
-  <!-- 1 -->
-  <div class="card">
-    <details>
-      <summary>1. Hähnchen-Reis-Gemüse-Pfanne <span class="kcal">≈ 600 kcal / Portion</span></summary>
-      <span class="tag">Mealprep • 4 Portionen</span>
-      <h3>Zutaten (für 4 Portionen)</h3>
-      <ul>
-        <li>600 g Hähnchenbrust</li>
-        <li>240 g Reis (ungekocht, ≈ 60 g pro Portion)</li>
-        <li>400 g Brokkoli (frisch oder TK)</li>
-        <li>2 Paprika</li>
-        <li>1 Zucchini</li>
-        <li>2 EL Raps- oder Olivenöl</li>
-        <li>Salz, Pfeffer, Paprikapulver, Knoblauch</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Reis nach Packungsangabe kochen.</li>
-        <li>Hähnchen in Stücke schneiden, würzen und in etwas Öl anbraten.</li>
-        <li>Gemüse klein schneiden, zum Hähnchen geben und bissfest garen.</li>
-        <li>Alles mit dem Reis mischen und in 4 Dosen aufteilen.</li>
-      </ul>
-      <p class="hint">Pro Portion: ca. 600 kcal – gut als Hauptmahlzeit bei 3 Mahlzeiten am Tag.</p>
-    </details>
-  </div>
+<main>
+  <!-- HEUTE -->
+  <section id="heute" class="section active">
+    <div class="card">
+      <h2>Heute – Vorschlag (automatisch)</h2>
+      <div class="row">
+        <select id="heute-portion">
+          <option value="0.9">0,9 Portion (etwas weniger)</option>
+          <option value="1" selected>1,0 Portion (normal)</option>
+          <option value="1.1">1,1 Portion (etwas mehr)</option>
+        </select>
+        <button id="heute-neu" class="secondary">Neu würfeln</button>
+      </div>
+      <p><span class="pill">Frühstück</span>
+        <span id="heute-fruehstueck-text"></span>
+        – <span class="kcal" id="heute-fruehstueck-kcal"></span>
+      </p>
+      <p><span class="pill">Mittag (warm, Mealprep)</span>
+        <span id="heute-mittag-text"></span>
+        – <span class="kcal" id="heute-mittag-kcal"></span>
+      </p>
+      <p><span class="pill">Abend (leicht)</span>
+        <span id="heute-abend-text"></span>
+        – <span class="kcal" id="heute-abend-kcal"></span>
+      </p>
+      <p><b>Gesamt:</b> <span class="kcal" id="heute-gesamt-kcal"></span> kcal</p>
+      <p class="hint">Die Kombination wird anhand des Datums automatisch gewählt. Mit „Neu würfeln“ kannst du für heute andere Gerichte probieren.</p>
+    </div>
+  </section>
 
-  <!-- 2 -->
-  <div class="card">
-    <details>
-      <summary>2. Puten-Gemüse-Curry mit Reis <span class="kcal">≈ 620 kcal / Portion</span></summary>
-      <span class="tag">Mealprep • 4 Portionen</span>
-      <h3>Zutaten</h3>
-      <ul>
-        <li>600 g Putenbrust</li>
-        <li>240 g Reis (ungekocht)</li>
-        <li>1 Dose Kokosmilch light (400 ml)</li>
-        <li>400 g TK-Gemüsemix (z. B. Asia-Gemüse)</li>
-        <li>2 EL Currypaste oder Currypulver</li>
-        <li>1 EL Öl</li>
-        <li>Salz, Pfeffer</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Reis kochen.</li>
-        <li>Pute in Streifen schneiden, mit Öl und Curry anbraten.</li>
-        <li>Gemüse dazugeben, kurz mitbraten.</li>
-        <li>Kokosmilch angießen, 10–15 Min. köcheln lassen.</li>
-        <li>Mit Reis in 4 Dosen aufteilen.</li>
-      </ul>
-    </details>
-  </div>
+  <!-- WOCHENPLAN -->
+  <section id="plan" class="section">
+    <div class="card">
+      <h2>10-Wochen-Plan (automatisch erzeugt)</h2>
+      <p>Jede Woche 7 Tage mit konkreter Zuordnung von Mittag & Abend aus den Rezepten. Kalorien passen ungefähr zum Zielbereich.</p>
+      <p class="hint">Die Reihenfolge wird automatisch aus den Rezeptlisten gebaut – du kannst sie flexibel tauschen.</p>
+    </div>
+    <div id="plan-container"></div>
+  </section>
 
-  <!-- 3 -->
-  <div class="card">
-    <details>
-      <summary>3. Lachs mit Ofenkartoffeln & Gemüse <span class="kcal">≈ 650 kcal / Portion</span></summary>
-      <span class="tag">Mealprep • 3–4 Portionen</span>
-      <h3>Zutaten</h3>
-      <ul>
-        <li>600–700 g Lachsfilet</li>
-        <li>800 g Kartoffeln</li>
-        <li>400 g Gemüse (z. B. Karotten, Zucchini, Paprika)</li>
-        <li>2–3 EL Olivenöl</li>
-        <li>Salz, Pfeffer, Zitronensaft, Kräuter</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Kartoffeln in Spalten schneiden, mit 1–2 EL Öl und Salz mischen, auf Blech geben.</li>
-        <li>Gemüse in Stücke schneiden, mit auf das Blech legen.</li>
-        <li>Lachs mit Salz, Pfeffer, Zitrone würzen, ebenfalls auf das Blech legen.</li>
-        <li>Bei 180–200 °C ca. 20–25 Min. backen.</li>
-        <li>In 3–4 Portionen aufteilen.</li>
-      </ul>
-    </details>
-  </div>
+  <!-- MITTAG-REZEPTE -->
+  <section id="rezepte-mittag" class="section">
+    <div class="card">
+      <h2>Warme Mittagessen (Mealprep · 20 Rezepte)</h2>
+      <p class="hint">Alle Angaben pro Portion. Für 3–4 Tage vorkochen: Mengen entsprechend multiplizieren.</p>
+    </div>
+    <div id="mittags-rezepte-container"></div>
+  </section>
 
-  <!-- 4 -->
-  <div class="card">
-    <details>
-      <summary>4. Chili con Carne (mager) <span class="kcal">≈ 580 kcal / Portion</span></summary>
-      <span class="tag">Mealprep • 4 Portionen</span>
-      <h3>Zutaten</h3>
-      <ul>
-        <li>500 g mageres Rinderhack oder Geflügelhack</li>
-        <li>1 Dose Kidneybohnen</li>
-        <li>1 Dose Mais</li>
-        <li>2 Dosen gehackte Tomaten</li>
-        <li>1 Zwiebel, 1 Knoblauchzehe</li>
-        <li>1 EL Öl</li>
-        <li>Chili, Paprika, Salz, Pfeffer</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Öl in Topf, Zwiebel/Knoblauch anbraten.</li>
-        <li>Hackfleisch zugeben, krümelig braten.</li>
-        <li>Bohnen, Mais, Tomaten dazu, gut würzen.</li>
-        <li>15–20 Min. köcheln lassen, in 4 Dosen füllen.</li>
-      </ul>
-    </details>
-  </div>
+  <!-- ABEND-REZEPTE -->
+  <section id="rezepte-abend" class="section">
+    <div class="card">
+      <h2>Leichte Abendessen (20 Rezepte)</h2>
+      <p class="hint">Alle Gerichte sind leicht, eiweißreich und schnell gemacht.</p>
+    </div>
+    <div id="abends-rezepte-container"></div>
+  </section>
 
-  <!-- 5 -->
-  <div class="card">
-    <details>
-      <summary>5. Linsen-Bolognese mit Vollkornnudeln <span class="kcal">≈ 600 kcal / Portion</span></summary>
-      <span class="tag">vegetarisch • 4 Portionen</span>
-      <h3>Zutaten</h3>
-      <ul>
-        <li>250 g rote Linsen</li>
-        <li>2 Dosen gehackte Tomaten</li>
-        <li>1 Zwiebel, 1 Knoblauchzehe</li>
-        <li>1 EL Öl</li>
-        <li>Gewürze (italienische Kräuter, Salz, Pfeffer)</li>
-        <li>280 g Vollkornnudeln (70 g pro Portion)</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Nudeln kochen.</li>
-        <li>Zwiebel/Knoblauch in Öl anbraten.</li>
-        <li>Linsen kurz mitbraten, Tomaten dazugeben, nach Packungsangabe garen.</li>
-        <li>Mit Gewürzen abschmecken, mit Nudeln in 4 Dosen verteilen.</li>
-      </ul>
-    </details>
-  </div>
+  <!-- GEWICHT -->
+  <section id="gewicht" class="section">
+    <div class="card">
+      <h2>Gewichtsverlauf</h2>
+      <div class="row">
+        <input type="date" id="gewicht-datum" />
+        <input type="number" step="0.1" id="gewicht-wert" placeholder="Gewicht in kg" />
+        <button id="gewicht-speichern">Speichern</button>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Datum</th><th>Gewicht (kg)</th></tr>
+        </thead>
+        <tbody id="gewicht-tabelle"></tbody>
+      </table>
+      <p class="hint">Die Werte werden nur im Browser auf diesem Gerät gespeichert (localStorage).</p>
+    </div>
+  </section>
+</main>
 
-  <!-- 6 -->
-  <div class="card">
-    <details>
-      <summary>6. Hähnchen-Gyros mit Ofengemüse <span class="kcal">≈ 620 kcal / Portion</span></summary>
-      <span class="tag">4 Portionen</span>
-      <h3>Zutaten</h3>
-      <ul>
-        <li>600 g Hähnchenbrust</li>
-        <li>2 EL Gyrosgewürz oder Paprika/Knoblauch/Oregano</li>
-        <li>600 g Gemüse (Paprika, Zwiebel, Zucchini)</li>
-        <li>2 EL Öl</li>
-        <li>Optional: 2 kleine Fladenbrote (geteilt auf 4 Portionen)</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Hähnchen in Streifen schneiden, mit Gyrosgewürz und etwas Öl marinieren.</li>
-        <li>Gemüse in Streifen schneiden.</li>
-        <li>Alles auf Blech geben und bei 190 °C ca. 20–25 Min. backen.</li>
-        <li>Mit etwas Fladenbrot pro Portion servieren oder separat einpacken.</li>
-      </ul>
-    </details>
-  </div>
+<script>
+  // Frühstück ist jeden Tag gleich (High-Protein-Standard)
+  const breakfast = {
+    name: "Skyr-Bowl (Skyr, Haferflocken, Beeren, Nüsse)",
+    kcal: 450,
+    ingredients: [
+      "250 g Skyr oder Magerquark",
+      "40 g Haferflocken",
+      "100 g Beeren (TK oder frisch)",
+      "10 g Nüsse (z.B. Walnüsse oder Mandeln)",
+      "optional: 1 TL Honig oder Süßstoff"
+    ]
+  };
 
-  <!-- 7 -->
-  <div class="card">
-    <details>
-      <summary>7. Thunfisch-Tomaten-Pasta <span class="kcal">≈ 580 kcal / Portion</span></summary>
-      <span class="tag">4 Portionen</span>
-      <h3>Zutaten</h3>
-      <ul>
-        <li>300 g Vollkornnudeln</li>
-        <li>2 Dosen Thunfisch in Wasser</li>
-        <li>1 Dose gehackte Tomaten</li>
-        <li>1 Zwiebel</li>
-        <li>1 EL Olivenöl</li>
-        <li>Salz, Pfeffer, Oregano</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Nudeln kochen.</li>
-        <li>Zwiebel in Öl anschwitzen.</li>
-        <li>Tomaten und abgetropften Thunfisch dazugeben, würzen.</li>
-        <li>Nudeln unterheben, in 4 Dosen füllen.</li>
-      </ul>
-    </details>
-  </div>
+  // 20 warme Mittagessen (Mealprep-tauglich) – kcal pro Portion
+  const lunches = [
+    {
+      name: "Hähnchen-Reis-Bowl mit Brokkoli",
+      kcal: 700,
+      ingredients: [
+        "150 g Hähnchenbrust",
+        "60 g Reis (roh, ca. 180 g gekocht)",
+        "200 g Brokkoli (frisch oder TK)",
+        "5 g Öl",
+        "Gewürze (Paprika, Salz, Pfeffer)"
+      ],
+      prep: [
+        "Reis nach Packung kochen.",
+        "Hähnchen würzen, in etwas Öl anbraten.",
+        "Brokkoli bissfest garen.",
+        "Alles in Boxen aufteilen – hält 2–3 Tage im Kühlschrank."
+      ]
+    },
+    {
+      name: "Linsencurry mit Reis",
+      kcal: 720,
+      ingredients: [
+        "70 g rote Linsen (roh)",
+        "50 g Reis (roh)",
+        "150 g stückige Tomaten",
+        "100 g Karotten",
+        "100 g Zucchini",
+        "5 g Öl, Curry, Salz"
+      ],
+      prep: [
+        "Linsen mit Tomaten und Wasser köcheln.",
+        "Gemüse würfeln und mitgaren.",
+        "Reis separat kochen.",
+        "Mit Curry und Salz abschmecken, zusammen servieren."
+      ]
+    },
+    {
+      name: "Chili con Carne (mager)",
+      kcal: 730,
+      ingredients: [
+        "130 g Rinderhack (mager)",
+        "150 g stückige Tomaten",
+        "80 g Kidneybohnen (abgetropft)",
+        "50 g Mais (abgetropft)",
+        "50 g Reis (roh)",
+        "Gewürze (Chili, Paprika, Salz)"
+      ],
+      prep: [
+        "Hackfleisch anbraten.",
+        "Bohnen, Mais, Tomaten zugeben.",
+        "Mit Gewürzen abschmecken und 15–20 Min köcheln.",
+        "Reis kochen, zusammen in Dosen füllen."
+      ]
+    },
+    {
+      name: "Puten-Gemüse-Pfanne mit Kartoffeln",
+      kcal: 710,
+      ingredients: [
+        "150 g Putenbrust",
+        "200 g Kartoffeln",
+        "150 g Gemüse (Paprika, Zucchini, Zwiebel)",
+        "5 g Öl",
+        "Gewürze"
+      ],
+      prep: [
+        "Kartoffeln in Würfel schneiden und vorkochen.",
+        "Pute in Streifen schneiden, würzen und anbraten.",
+        "Gemüse dazugeben und mitbraten.",
+        "Kartoffeln unterheben, ggf. nachwürzen."
+      ]
+    },
+    {
+      name: "Lachs mit Ofengemüse",
+      kcal: 740,
+      ingredients: [
+        "140 g Lachsfilet",
+        "200 g Kartoffeln oder Süßkartoffeln",
+        "150 g Gemüse (z.B. Karotten, Zucchini, Paprika)",
+        "5 g Öl",
+        "Zitrone, Salz, Pfeffer"
+      ],
+      prep: [
+        "Gemüse und Kartoffeln in Stücke schneiden.",
+        "Mit Öl und Gewürzen mischen, auf Blech geben.",
+        "Lachs oben drauf, mit Zitrone beträufeln.",
+        "Bei 180–200 °C ca. 20–25 Min backen."
+      ]
+    },
+    {
+      name: "Thunfisch-Vollkornpasta",
+      kcal: 710,
+      ingredients: [
+        "70 g Vollkornnudeln (roh)",
+        "1 Dose Thunfisch in Wasser (abgetropft ~100 g)",
+        "150 g stückige Tomaten",
+        "50 g Mais",
+        "20 g Frischkäse leicht"
+      ],
+      prep: [
+        "Nudeln kochen.",
+        "Thunfisch, Tomaten, Mais in Topf erwärmen.",
+        "Frischkäse unterrühren, würzen.",
+        "Mit Nudeln mischen, in Box füllen."
+      ]
+    },
+    {
+      name: "Rinderstreifen mit Paprika & Reis",
+      kcal: 740,
+      ingredients: [
+        "150 g mageres Rindfleisch",
+        "60 g Reis (roh)",
+        "150 g Paprika",
+        "50 g Zwiebel",
+        "5 g Öl, Gewürze"
+      ],
+      prep: [
+        "Reis kochen.",
+        "Rind in Streifen schneiden, scharf anbraten.",
+        "Paprika & Zwiebel dazugeben, mitgaren.",
+        "Würzen und mit Reis portionieren."
+      ]
+    },
+    {
+      name: "Hähnchen-Curry mit Kokos light",
+      kcal: 720,
+      ingredients: [
+        "150 g Hähnchenbrust",
+        "60 g Reis (roh)",
+        "150 g Gemüse (Karotte, Erbsen, Paprika)",
+        "50 ml Kokosmilch light",
+        "Curry, Salz"
+      ],
+      prep: [
+        "Reis kochen.",
+        "Hähnchen anbraten, Gemüse dazu.",
+        "Mit Curry und Kokosmilch ablöschen, köcheln.",
+        "Mit Reis servieren."
+      ]
+    },
+    {
+      name: "Ofenblech: Hähnchen & Gemüse",
+      kcal: 700,
+      ingredients: [
+        "150 g Hähnchenbrust",
+        "250 g Gemüse (Kartoffeln, Karotten, Zucchini, Paprika)",
+        "5 g Öl",
+        "Gewürze (Paprika, Knoblauch, Kräuter)"
+      ],
+      prep: [
+        "Gemüse und Hähnchen in Stücke schneiden.",
+        "Mit Öl und Gewürzen mischen.",
+        "Auf Blech verteilen, bei 190 °C ca. 25–30 Min backen."
+      ]
+    },
+    {
+      name: "Pasta Bolognese (light)",
+      kcal: 730,
+      ingredients: [
+        "70 g Vollkornnudeln (roh)",
+        "120 g mageres Rinderhack",
+        "150 g stückige Tomaten",
+        "50 g Karotte",
+        "Zwiebel, Knoblauch"
+      ],
+      prep: [
+        "Hackfleisch mit Zwiebel/Knoblauch anbraten.",
+        "Tomaten und fein geriebene Karotte dazugeben.",
+        "Köcheln lassen, würzen.",
+        "Nudeln kochen, alles kombinieren."
+      ]
+    },
+    {
+      name: "Türkische Bulgurpfanne mit Pute",
+      kcal: 720,
+      ingredients: [
+        "60 g Bulgur (roh)",
+        "150 g Putenbrust",
+        "150 g Paprika/Zucchini",
+        "50 g Zwiebel",
+        "5 g Öl, Gewürze"
+      ],
+      prep: [
+        "Bulgur in Brühe garen.",
+        "Pute würzen und anbraten.",
+        "Gemüse würfeln und mitbraten.",
+        "Mit Bulgur mischen."
+      ]
+    },
+    {
+      name: "Süßkartoffel-Hack-Blech",
+      kcal: 750,
+      ingredients: [
+        "150 g mageres Hack",
+        "200 g Süßkartoffel",
+        "150 g Paprika/Zwiebel",
+        "5 g Öl, Gewürze"
+      ],
+      prep: [
+        "Süßkartoffel in Würfel schneiden.",
+        "Mit Gemüse und Hack mischen, würzen.",
+        "Auf Blech verteilen, 25–30 Min bei 190 °C backen."
+      ]
+    },
+    {
+      name: "Linsen-Bolognese",
+      kcal: 690,
+      ingredients: [
+        "70 g rote Linsen",
+        "60 g Vollkornnudeln",
+        "150 g stückige Tomaten",
+        "100 g Gemüse (Karotte/Zwiebel)"
+      ],
+      prep: [
+        "Linsen mit Tomaten und Wasser köcheln.",
+        "Gemüse hacken und mitkochen.",
+        "Nudeln kochen, zusammen servieren."
+      ]
+    },
+    {
+      name: "Mediterrane Reis-Hähnchen-Pfanne",
+      kcal: 710,
+      ingredients: [
+        "60 g Reis (roh)",
+        "150 g Hähnchen",
+        "150 g Gemüse (Zucchini, Paprika, Tomate)",
+        "5 g Öl, italienische Kräuter"
+      ],
+      prep: [
+        "Reis kochen.",
+        "Hähnchen anbraten.",
+        "Gemüse in Würfel, mitbraten.",
+        "Mit Kräutern abschmecken, Reis unterheben."
+      ]
+    },
+    {
+      name: "Kichererbsen-Curry mit Reis",
+      kcal: 710,
+      ingredients: [
+        "60 g Reis (roh)",
+        "120 g Kichererbsen (abgetropft)",
+        "150 g stückige Tomaten",
+        "100 g Gemüse",
+        "5 g Öl, Curry, Salz"
+      ],
+      prep: [
+        "Reis kochen.",
+        "Gemüse in Öl anbraten.",
+        "Kichererbsen und Tomaten zufügen.",
+        "Mit Curry würzen, köcheln lassen."
+      ]
+    },
+    {
+      name: "Puten-Gyros mit Ofengemüse",
+      kcal: 730,
+      ingredients: [
+        "150 g Pute",
+        "200 g Kartoffeln",
+        "150 g Paprika/Zwiebel",
+        "5 g Öl, Gyrosgewürz"
+      ],
+      prep: [
+        "Pute in Streifen schneiden, würzen.",
+        "Kartoffeln & Gemüse in Stücke schneiden.",
+        "Alles mit Öl mischen, auf Blech geben, 25 Min backen."
+      ]
+    },
+    {
+      name: "Lachs-Reis-Bowl",
+      kcal: 740,
+      ingredients: [
+        "140 g Lachs",
+        "60 g Reis (roh)",
+        "150 g Gemüse (z.B. Brokkoli/Erbsen)",
+        "5 g Öl/Zitrone"
+      ],
+      prep: [
+        "Reis kochen.",
+        "Lachs würzen, anbraten oder backen.",
+        "Gemüse garen.",
+        "Alles in Bowl/Box anrichten."
+      ]
+    },
+    {
+      name: "Hackpfanne Mexiko",
+      kcal: 720,
+      ingredients: [
+        "130 g mageres Hack",
+        "100 g Mais",
+        "80 g Kidneybohnen",
+        "150 g stückige Tomaten",
+        "50 g Reis (roh)"
+      ],
+      prep: [
+        "Hack anbraten.",
+        "Mais, Bohnen, Tomaten dazu.",
+        "Mit Chili/Paprika würzen.",
+        "Reis kochen, alles zusammen servieren."
+      ]
+    },
+    {
+      name: "One-Pot-Pasta Hähnchen",
+      kcal: 720,
+      ingredients: [
+        "70 g Vollkornnudeln",
+        "130 g Hähnchen",
+        "150 g stückige Tomaten",
+        "100 g Gemüse",
+        "Brühe, Gewürze"
+      ],
+      prep: [
+        "Hähnchen kurz anbraten.",
+        "Nudeln, Tomaten, Gemüse und Brühe dazu.",
+        "Alles in einem Topf kochen bis Garzeit erreicht."
+      ]
+    },
+    {
+      name: "Bulgursalat mit Hähnchen (warm/kalt)",
+      kcal: 700,
+      ingredients: [
+        "60 g Bulgur",
+        "130 g Hähnchen",
+        "150 g Tomate/Gurke/Paprika",
+        "10 g Olivenöl, Zitronensaft"
+      ],
+      prep: [
+        "Bulgur in heißer Brühe ziehen lassen.",
+        "Hähnchen anbraten.",
+        "Gemüse klein schneiden.",
+        "Alles mit Öl/Zitrone mischen."
+      ]
+    }
+  ];
 
-  <!-- 8 -->
-  <div class="card">
-    <details>
-      <summary>8. Kartoffel-Gemüse-Auflauf mit Schinken <span class="kcal">≈ 650 kcal / Portion</span></summary>
-      <span class="tag">4 Portionen</span>
-      <h3>Zutaten</h3>
-      <ul>
-        <li>800 g Kartoffeln</li>
-        <li>400 g Gemüse (z. B. Brokkoli, Karotten)</li>
-        <li>150 g magerer Kochschinken</li>
-        <li>200 ml Kochsahne light oder Milch</li>
-        <li>100 g geriebener Käse (light)</li>
-        <li>Gewürze, etwas Öl für die Form</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Kartoffeln in Scheiben vorkochen (ca. 10 Min.).</li>
-        <li>Gemüse kurz blanchieren.</li>
-        <li>Alles mit gewürzter Kochsahne in Auflaufform, Käse darüber.</li>
-        <li>Bei 180 °C ca. 20–25 Min. backen, in 4 Portionen schneiden.</li>
-      </ul>
-    </details>
-  </div>
+  // 20 leichte Abendessen – kcal pro Portion
+  const dinners = [
+    {
+      name: "Großer Thunfischsalat",
+      kcal: 450,
+      ingredients: [
+        "1 Dose Thunfisch in Wasser (~100 g)",
+        "150 g gemischter Salat",
+        "100 g Tomate/Gurke/Paprika",
+        "20 g Feta light",
+        "10 g Olivenöl + Essig"
+      ],
+      prep: [
+        "Salat waschen, Gemüse schneiden.",
+        "Thunfisch abtropfen.",
+        "Alles in Schüssel, Feta und Dressing dazu."
+      ]
+    },
+    {
+      name: "Skyr + Obst + Nüsse",
+      kcal: 420,
+      ingredients: [
+        "250 g Skyr",
+        "150 g Obst (z.B. Apfel, Beeren, Banane)",
+        "10–15 g Nüsse",
+        "Zimt nach Geschmack"
+      ],
+      prep: [
+        "Skyr in Schüssel.",
+        "Obst klein schneiden und dazugeben.",
+        "Nüsse und Zimt drüber."
+      ]
+    },
+    {
+      name: "Hüttenkäse-Teller",
+      kcal: 430,
+      ingredients: [
+        "200 g körniger Frischkäse",
+        "150 g Gemüsesticks (Gurke, Paprika, Karotte)",
+        "1 Scheibe Vollkornbrot (~40 g)",
+        "etwas Salz/Pfeffer"
+      ],
+      prep: [
+        "Gemüse in Sticks schneiden.",
+        "Hüttenkäse würzen.",
+        "Mit Brot servieren."
+      ]
+    },
+    {
+      name: "Rührei mit Gemüse",
+      kcal: 450,
+      ingredients: [
+        "2 Eier",
+        "100 g Eiklar (Eiweiß, flüssig)",
+        "150 g Gemüse (Paprika, Zwiebel, Spinat)",
+        "5 g Öl"
+      ],
+      prep: [
+        "Gemüse klein schneiden und anbraten.",
+        "Eier und Eiklar verquirlen, dazu geben.",
+        "Stocken lassen, abschmecken."
+      ]
+    },
+    {
+      name: "Mediterraner Salat mit Pute",
+      kcal: 460,
+      ingredients: [
+        "120 g Putenstreifen",
+        "150 g Salat",
+        "80 g Tomate",
+        "50 g Gurke",
+        "20 g Feta light",
+        "10 g Olivenöl"
+      ],
+      prep: [
+        "Pute anbraten, würzen.",
+        "Salat/Gemüse schneiden.",
+        "Mit Feta und Öl mischen, Pute oben drauf."
+      ]
+    },
+    {
+      name: "Tomate-Mozzarella light",
+      kcal: 430,
+      ingredients: [
+        "150 g Tomaten",
+        "60 g Mozzarella light",
+        "10 g Olivenöl",
+        "Basilikum, Balsamico",
+        "1 Scheibe Vollkornbrot (~40 g)"
+      ],
+      prep: [
+        "Tomaten und Mozzarella in Scheiben.",
+        "Mit Öl, Balsamico, Basilikum anrichten.",
+        "Mit Brot servieren."
+      ]
+    },
+    {
+      name: "Joghurt-Bowl",
+      kcal: 400,
+      ingredients: [
+        "250 g Naturjoghurt (1,5 %)",
+        "40 g zuckerarmes Müsli oder Hafer",
+        "100 g Beeren/Obst"
+      ],
+      prep: [
+        "Joghurt in Schüssel.",
+        "Müsli und Obst dazugeben."
+      ]
+    },
+    {
+      name: "Eier & Brot",
+      kcal: 450,
+      ingredients: [
+        "2 Eier",
+        "2 Scheiben Vollkornbrot (ca. 80 g)",
+        "Tomate/Gurke als Beilage"
+      ],
+      prep: [
+        "Eier kochen oder als Rührei.",
+        "Brot toasten oder so essen.",
+        "Mit Gemüse anrichten."
+      ]
+    },
+    {
+      name: "Gemüsesuppe (satt, leicht)",
+      kcal: 380,
+      ingredients: [
+        "250 g Gemüsemix (TK oder frisch)",
+        "300 ml Brühe",
+        "optional 50 g Hähnchenwürfel",
+        "Gewürze"
+      ],
+      prep: [
+        "Gemüse in Brühe weich kochen.",
+        "Optional Hähnchen hinzugeben.",
+        "Würzen – fertig."
+      ]
+    },
+    {
+      name: "Protein-Salatbowl",
+      kcal: 460,
+      ingredients: [
+        "150 g Salat",
+        "80 g Kichererbsen (abgetropft)",
+        "80 g Thunfisch oder Pute",
+        "20 g Joghurt-Dressing"
+      ],
+      prep: [
+        "Kichererbsen abspülen.",
+        "Salat schneiden.",
+        "Mit Thunfisch/Pute und Dressing mischen."
+      ]
+    },
+    {
+      name: "Ofengemüse + Hüttenkäse",
+      kcal: 440,
+      ingredients: [
+        "200 g Gemüse (z.B. Paprika, Zucchini, Karotte)",
+        "5 g Öl",
+        "150 g Hüttenkäse"
+      ],
+      prep: [
+        "Gemüse in Stücke schneiden.",
+        "Mit Öl und Gewürzen in Ofen (190 °C, ca. 20 Min).",
+        "Mit Hüttenkäse servieren."
+      ]
+    },
+    {
+      name: "Wrap light",
+      kcal: 450,
+      ingredients: [
+        "1 Vollkornwrap (~60 g)",
+        "80 g Pute oder Hähnchen",
+        "50 g Salat",
+        "50 g Tomate/Gurke",
+        "20 g Joghurt-Sauce"
+      ],
+      prep: [
+        "Pute/Hähnchen braten.",
+        "Gemüse schneiden.",
+        "Alles in Wrap einrollen."
+      ]
+    },
+    {
+      name: "Skyr mit Apfel & Zimt",
+      kcal: 400,
+      ingredients: [
+        "250 g Skyr",
+        "1 mittelgroßer Apfel",
+        "10 g Nüsse",
+        "Zimt"
+      ],
+      prep: [
+        "Skyr in Schüssel.",
+        "Apfel würfeln, dazugeben.",
+        "Mit Nüssen und Zimt toppen."
+      ]
+    },
+    {
+      name: "Feta-Gemüse-Pfanne",
+      kcal: 450,
+      ingredients: [
+        "200 g Gemüse (Zucchini, Paprika, Tomate)",
+        "10 g Öl",
+        "40 g Feta light"
+      ],
+      prep: [
+        "Gemüse in Pfanne mit Öl anbraten.",
+        "Mit Salz/Kräutern würzen.",
+        "Feta darüber bröseln."
+      ]
+    },
+    {
+      name: "Eiersalat light",
+      kcal: 430,
+      ingredients: [
+        "2 Eier",
+        "100 g Magerquark",
+        "50 g Joghurt 1,5 %",
+        "Senf, Gewürze",
+        "1 Scheibe Vollkornbrot"
+      ],
+      prep: [
+        "Eier kochen, klein schneiden.",
+        "Mit Quark, Joghurt, Senf mischen.",
+        "Mit Brot essen."
+      ]
+    },
+    {
+      name: "Caprese-Salat + Hähnchen",
+      kcal: 480,
+      ingredients: [
+        "150 g Tomaten",
+        "60 g Mozzarella light",
+        "100 g Hähnchenstreifen",
+        "10 g Olivenöl, Balsamico"
+      ],
+      prep: [
+        "Tomaten/Mozzarella schneiden.",
+        "Hähnchen anbraten.",
+        "Alles auf Teller mit Dressing."
+      ]
+    },
+    {
+      name: "Kalte Reis-Gemüse-Bowl",
+      kcal: 430,
+      ingredients: [
+        "80 g gekochter Reis (Rest vom Mittag)",
+        "150 g Rohkost (Paprika, Gurke, Karotte)",
+        "100 g Hüttenkäse oder Thunfisch"
+      ],
+      prep: [
+        "Reis in Schüssel.",
+        "Gemüse und Protein dazugeben.",
+        "Mit Gewürzen abschmecken."
+      ]
+    },
+    {
+      name: "Quark-Creme mit Beeren",
+      kcal: 420,
+      ingredients: [
+        "250 g Magerquark",
+        "100 g Beeren",
+        "Süßstoff oder 1 TL Honig",
+        "10 g Nüsse"
+      ],
+      prep: [
+        "Quark glattrühren.",
+        "Beeren, Süße und Nüsse dazugeben."
+      ]
+    },
+    {
+      name: "Gemischter Salat + Ei",
+      kcal: 400,
+      ingredients: [
+        "150 g Salat",
+        "100 g Gemüse",
+        "2 Eier",
+        "10 g Öl + Essig"
+      ],
+      prep: [
+        "Eier kochen, vierteln.",
+        "Salat/Gemüse schneiden.",
+        "Mit Dressing mischen, Eier oben drauf."
+      ]
+    },
+    {
+      name: "Proteinshake + Obst",
+      kcal: 380,
+      ingredients: [
+        "30 g Whey-Protein",
+        "300 ml Wasser oder Milch",
+        "1 Banane oder Apfel"
+      ],
+      prep: [
+        "Shake im Shaker mischen.",
+        "Obst dazu essen."
+      ]
+    }
+  ];
 
-  <!-- 9 -->
-  <div class="card">
-    <details>
-      <summary>9. Kichererbsen-Curry mit Reis <span class="kcal">≈ 560 kcal / Portion</span></summary>
-      <span class="tag">vegetarisch • 4 Portionen</span>
-      <h3>Zutaten</h3>
-      <ul>
-        <li>2 Dosen Kichererbsen (abgetropft)</li>
-        <li>1 Dose Kokosmilch light</li>
-        <li>1 Dose gehackte Tomaten</li>
-        <li>1 Zwiebel</li>
-        <li>1–2 EL Currypulver</li>
-        <li>1 EL Öl</li>
-        <li>240 g Reis (ungekocht)</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Reis kochen.</li>
-        <li>Zwiebel in Öl anschwitzen.</li>
-        <li>Kichererbsen, Tomaten, Kokosmilch, Curry dazu, 10–15 Min. köcheln lassen.</li>
-        <li>Mit Reis in Dosen aufteilen.</li>
-      </ul>
-    </details>
-  </div>
+  // ---------- Hilfsfunktionen ----------
 
-  <!-- 10 -->
-  <div class="card">
-    <details>
-      <summary>10. Rindergeschnetzeltes mit Paprika & Reis <span class="kcal">≈ 620 kcal / Portion</span></summary>
-      <span class="tag">4 Portionen</span>
-      <h3>Zutaten</h3>
-      <ul>
-        <li>500 g mageres Rindergeschnetzeltes</li>
-        <li>3 Paprika</li>
-        <li>1 Zwiebel</li>
-        <li>1 EL Öl</li>
-        <li>200 ml Gemüsebrühe</li>
-        <li>Gewürze (Paprika, Pfeffer, Salz)</li>
-        <li>240 g Reis (ungekocht)</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Reis kochen.</li>
-        <li>Fleisch in Öl anbraten, aus der Pfanne nehmen.</li>
-        <li>Paprika und Zwiebel in Streifen anbraten, Fleisch wieder dazu.</li>
-        <li>Brühe angießen, kurz köcheln lassen, würzen.</li>
-        <li>Mit Reis in 4 Dosen aufteilen.</li>
-      </ul>
-    </details>
-  </div>
-</section>
+  const tabs = document.querySelectorAll(".tab");
+  const sections = document.querySelectorAll(".section");
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      tabs.forEach(t => t.classList.remove("active"));
+      sections.forEach(s => s.classList.remove("active"));
+      tab.classList.add("active");
+      document.getElementById(tab.dataset.target).classList.add("active");
+    });
+  });
 
-<section>
-  <h2 class="section-title">Leichte Abendessen (ca. 250–450 kcal)</h2>
+  function pseudoRandomFromDate(mod) {
+    const today = new Date();
+    const day = today.getDate();
+    const month = today.getMonth() + 1;
+    const year = today.getFullYear();
+    const seed = day + month * 31 + year * 7;
+    return seed % mod;
+  }
 
-  <!-- A1 -->
-  <div class="card">
-    <details>
-      <summary>1. Großer Thunfisch-Salat <span class="kcal">≈ 350 kcal</span></summary>
-      <span class="tag">leicht • viel Volumen</span>
-      <h3>Zutaten (1 Portion)</h3>
-      <ul>
-        <li>1 Dose Thunfisch in Wasser (abgetropft, 120 g)</li>
-        <li>150–200 g gemischter Salat</li>
-        <li>5 Cherrytomaten</li>
-        <li>½ Gurke</li>
-        <li>1 EL Olivenöl, Essig, Gewürze</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Salat waschen, Gemüse schneiden.</li>
-        <li>Thunfisch darüber geben.</li>
-        <li>Mit Öl, Essig, Salz, Pfeffer anmachen.</li>
-      </ul>
-    </details>
-  </div>
+  function renderHeute() {
+    const portion = parseFloat(document.getElementById("heute-portion").value) || 1;
+    const baseIndex = pseudoRandomFromDate(1000);
 
-  <!-- A2 -->
-  <div class="card">
-    <details>
-      <summary>2. Skyr mit Beeren & Nüssen <span class="kcal">≈ 300–350 kcal</span></summary>
-      <span class="tag">Proteinreich</span>
-      <h3>Zutaten</h3>
-      <ul>
-        <li>250 g Skyr (natur)</li>
-        <li>100 g Beeren (frisch oder TK)</li>
-        <li>10–15 g Nüsse oder Mandeln</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Skyr in Schüssel geben.</li>
-        <li>Beeren und Nüsse darüber, ggf. mit Süßstoff oder etwas Honig süßen.</li>
-      </ul>
-    </details>
-  </div>
+    const lunchIndex = baseIndex % lunches.length;
+    const dinnerIndex = (baseIndex * 7 + 3) % dinners.length;
 
-  <!-- A3 -->
-  <div class="card">
-    <details>
-      <summary>3. Hüttenkäse-Gemüse-Bowl <span class="kcal">≈ 300–350 kcal</span></summary>
-      <span class="tag">sehr leicht</span>
-      <h3>Zutaten</h3>
-      <ul>
-        <li>200 g Hüttenkäse</li>
-        <li>½ Paprika</li>
-        <li>½ Gurke</li>
-        <li>1 kleine Karotte</li>
-        <li>2 Scheiben Vollkornknäckebrot</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Gemüse klein schneiden, mit Hüttenkäse mischen oder daneben anrichten.</li>
-        <li>Mit Knäckebrot essen.</li>
-      </ul>
-    </details>
-  </div>
+    const lunch = lunches[lunchIndex];
+    const dinner = dinners[dinnerIndex];
 
-  <!-- A4 -->
-  <div class="card">
-    <details>
-      <summary>4. Rührei mit Gemüse <span class="kcal">≈ 350–400 kcal</span></summary>
-      <span class="tag">warm • schnell</span>
-      <h3>Zutaten</h3>
-      <ul>
-        <li>3 Eier</li>
-        <li>100 g Gemüse (z. B. Paprika, Zwiebel, Spinat)</li>
-        <li>1 TL Öl</li>
-        <li>Gewürze</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Gemüse klein schneiden, in wenig Öl anbraten.</li>
-        <li>Eier verquirlen, darüber geben, stocken lassen.</li>
-      </ul>
-    </details>
-  </div>
+    const bfKcal = breakfast.kcal * portion;
+    const luKcal = lunch.kcal * portion;
+    const diKcal = dinner.kcal * portion;
+    const total = bfKcal + luKcal + diKcal;
 
-  <!-- A5 -->
-  <div class="card">
-    <details>
-      <summary>5. Tomate-Mozzarella leicht <span class="kcal">≈ 350 kcal</span></summary>
-      <span class="tag">mediterran</span>
-      <h3>Zutaten</h3>
-      <ul>
-        <li>2 mittelgroße Tomaten</li>
-        <li>1 Kugel Mozzarella light (125 g)</li>
-        <li>1 TL Olivenöl</li>
-        <li>Balsamico, Salz, Pfeffer, Basilikum</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Tomaten und Mozzarella in Scheiben schneiden.</li>
-        <li>Auf Teller anrichten, mit Öl, Balsamico und Gewürzen toppen.</li>
-      </ul>
-    </details>
-  </div>
+    document.getElementById("heute-fruehstueck-text").textContent = breakfast.name;
+    document.getElementById("heute-fruehstueck-kcal").textContent = `${bfKcal.toFixed(0)} kcal`;
 
-  <!-- A6 -->
-  <div class="card">
-    <details>
-      <summary>6. Gurken-Quark-Salat mit Kartoffel <span class="kcal">≈ 400 kcal</span></summary>
-      <span class="tag">leicht & sättigend</span>
-      <h3>Zutaten</h3>
-      <ul>
-        <li>200 g Magerquark</li>
-        <li>½–1 Gurke</li>
-        <li>1 kleine gekochte Kartoffel (100 g)</li>
-        <li>Kräuter, Salz, Pfeffer</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Gurke in Scheiben, mit Quark und Kräutern mischen.</li>
-        <li>Kartoffel in Stücken dazu essen.</li>
-      </ul>
-    </details>
-  </div>
+    document.getElementById("heute-mittag-text").textContent = lunch.name;
+    document.getElementById("heute-mittag-kcal").textContent = `${luKcal.toFixed(0)} kcal`;
 
-  <!-- A7 -->
-  <div class="card">
-    <details>
-      <summary>7. Mediterraner Linsensalat <span class="kcal">≈ 400 kcal</span></summary>
-      <span class="tag">kalt • gut vorzubereiten</span>
-      <h3>Zutaten</h3>
-      <ul>
-        <li>100 g gekochte Linsen</li>
-        <li>½ Paprika</li>
-        <li>½ Gurke</li>
-        <li>5 Cherrytomaten</li>
-        <li>1 EL Olivenöl, Essig, Kräuter</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Gemüse klein schneiden.</li>
-        <li>Mit Linsen und Dressing mischen.</li>
-      </ul>
-    </details>
-  </div>
+    document.getElementById("heute-abend-text").textContent = dinner.name;
+    document.getElementById("heute-abend-kcal").textContent = `${diKcal.toFixed(0)} kcal`;
 
-  <!-- A8 -->
-  <div class="card">
-    <details>
-      <summary>8. Joghurt-Obst-Schüssel mit Hafer <span class="kcal">≈ 350–400 kcal</span></summary>
-      <span class="tag">süß • leicht</span>
-      <h3>Zutaten</h3>
-      <ul>
-        <li>200 g Naturjoghurt (1,5 %)</li>
-        <li>30 g Haferflocken</li>
-        <li>1 Stück Obst (z. B. Banane oder Apfel)</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Joghurt in Schüssel geben.</li>
-        <li>Haferflocken und geschnittenes Obst darüber.</li>
-      </ul>
-    </details>
-  </div>
+    document.getElementById("heute-gesamt-kcal").textContent = total.toFixed(0);
+  }
 
-  <!-- A9 -->
-  <div class="card">
-    <details>
-      <summary>9. Eiweiß-Wrap mit Pute <span class="kcal">≈ 350–400 kcal</span></summary>
-      <span class="tag">schnell • auch to go</span>
-      <h3>Zutaten</h3>
-      <ul>
-        <li>1 Vollkornwrap</li>
-        <li>50–70 g Putenbrustaufschnitt</li>
-        <li>1–2 Blätter Salat</li>
-        <li>2 Scheiben Gurke, 2 Scheiben Tomate</li>
-        <li>1 EL Joghurt oder Light-Frischkäse</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Wrap mit Joghurt/Frischkäse bestreichen.</li>
-        <li>Mit Pute, Salat und Gemüse belegen, eng einrollen.</li>
-      </ul>
-    </details>
-  </div>
+  document.getElementById("heute-portion").addEventListener("change", renderHeute);
+  document.getElementById("heute-neu").addEventListener("click", () => {
+    renderHeute(); // neue Kombination (weil Datum-Seed gleich, aber wir könnten hier optional random machen)
+  });
 
-  <!-- A10 -->
-  <div class="card">
-    <details>
-      <summary>10. Gemüsesticks mit Hummus & Brot <span class="kcal">≈ 350–400 kcal</span></summary>
-      <span class="tag">Snack-Abendessen</span>
-      <h3>Zutaten</h3>
-      <ul>
-        <li>1 kleine Karotte</li>
-        <li>½ Paprika</li>
-        <li>½ Gurke</li>
-        <li>50 g Hummus</li>
-        <li>1 Scheibe Vollkornbrot</li>
-      </ul>
-      <h3>Zubereitung</h3>
-      <ul>
-        <li>Gemüse in Stifte schneiden.</li>
-        <li>Mit Hummus dippen, Brot dazu essen.</li>
-      </ul>
-    </details>
-  </div>
-</section>
+  // Wochenplan automatisch: 10 Wochen á 7 Tage aus den Rezeptlisten bauen
+  function buildPlan() {
+    const daysPerWeek = 7;
+    const totalDays = 10 * daysPerWeek;
+    const plan = [];
+    for (let i = 0; i < totalDays; i++) {
+      const week = Math.floor(i / daysPerWeek) + 1;
+      const dayInWeek = (i % daysPerWeek) + 1;
+      const lunchIndex = i % lunches.length;
+      const dinnerIndex = (i * 3) % dinners.length;
 
-<p class="hint">
-Tagesbeispiel: Frühstück ~500 kcal (z. B. Skyr/Oats), Mittag 550–650 kcal (eines der warmen Gerichte),
-Abend 300–400 kcal (leichtes Abendessen) → insgesamt ca. 1.750–1.900 kcal.
-</p>
+      plan.push({
+        week,
+        dayInWeek,
+        breakfast,
+        lunch: lunches[lunchIndex],
+        dinner: dinners[dinnerIndex]
+      });
+    }
+    return plan;
+  }
 
+  function renderPlan() {
+    const plan = buildPlan();
+    const container = document.getElementById("plan-container");
+    container.innerHTML = "";
+
+    for (let w = 1; w <= 10; w++) {
+      const weekDays = plan.filter(d => d.week === w);
+      const weekCard = document.createElement("div");
+      weekCard.className = "card";
+
+      let inner = `<h3>Woche ${w}</h3><table><thead>
+        <tr><th>Tag</th><th>Frühstück</th><th>Mittag</th><th>Abend</th><th>Gesamt kcal</th></tr>
+      </thead><tbody>`;
+
+      weekDays.forEach(d => {
+        const total = d.breakfast.kcal + d.lunch.kcal + d.dinner.kcal;
+        inner += `
+          <tr>
+            <td>Tag ${d.dayInWeek}</td>
+            <td>${d.breakfast.name}</td>
+            <td>${d.lunch.name}</td>
+            <td>${d.dinner.name}</td>
+            <td>${total}</td>
+          </tr>
+        `;
+      });
+
+      inner += "</tbody></table>";
+      weekCard.innerHTML = inner;
+      container.appendChild(weekCard);
+    }
+  }
+
+  function renderRecipeList(list, containerId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
+    list.forEach(r => {
+      const card = document.createElement("div");
+      card.className = "card";
+      const ing = r.ingredients.map(i => `<li>${i}</li>`).join("");
+      const prep = r.prep.map(s => `<li>${s}</li>`).join("");
+      card.innerHTML = `
+        <details>
+          <summary>${r.name} – ca. <span class="kcal">${r.kcal} kcal</span></summary>
+          <p><b>Zutaten (pro Portion):</b></p>
+          <ul>${ing}</ul>
+          <p><b>Zubereitung:</b></p>
+          <ul>${prep}</ul>
+        </details>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function loadWeights() {
+    try {
+      return JSON.parse(localStorage.getItem("daniel_ernaehrung_weights") || "[]");
+    } catch {
+      return [];
+    }
+  }
+  function saveWeights(data) {
+    localStorage.setItem("daniel_ernaehrung_weights", JSON.stringify(data));
+  }
+  function renderWeights() {
+    const tbody = document.getElementById("gewicht-tabelle");
+    const data = loadWeights().sort((a, b) => a.date.localeCompare(b.date));
+    tbody.innerHTML = data.map(e => `
+      <tr><td>${e.date}</td><td>${parseFloat(e.weight).toFixed(1)}</td></tr>
+    `).join("");
+  }
+  function setupWeight() {
+    const dateInput = document.getElementById("gewicht-datum");
+    const weightInput = document.getElementById("gewicht-wert");
+    const today = new Date().toISOString().slice(0, 10);
+    dateInput.value = today;
+
+    document.getElementById("gewicht-speichern").addEventListener("click", () => {
+      const date = dateInput.value;
+      const weight = parseFloat((weightInput.value || "").replace(",", "."));
+      if (!date || isNaN(weight)) {
+        alert("Bitte Datum und Gewicht eingeben.");
+        return;
+      }
+      const data = loadWeights();
+      const existing = data.find(d => d.date === date);
+      if (existing) existing.weight = weight;
+      else data.push({ date, weight });
+      saveWeights(data);
+      renderWeights();
+      weightInput.value = "";
+    });
+  }
+
+  // Init
+  renderHeute();
+  renderPlan();
+  renderRecipeList(lunches, "mittags-rezepte-container");
+  renderRecipeList(dinners, "abends-rezepte-container");
+  setupWeight();
+  renderWeights();
+</script>
 </body>
 </html>
